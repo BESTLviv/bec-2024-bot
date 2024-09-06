@@ -2,5 +2,3 @@
 .env
 /node_modules
 sessions.json
-package-lock.json
-package.json

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "heroku-postbuild": "npm run build",
     "build": "tsc",
     "start": "node ./dist/app.js",
     "dev": "nodemon --watch src --ext ts --ignore dist --exec ts-node src/app.ts",
