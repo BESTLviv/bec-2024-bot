@@ -5,6 +5,8 @@ import { UserModel, teamModel } from "../database/Schema.class";
 import { GetUsersFromTeam, handleOption, sendTeamsList, showTeamInList } from "../utils/team-list-menu";
 import { handleFilesAndSendArchive } from "../utils/download-cv";
 import { sendMessage } from "../utils/send-message";
+import { GetCurrentStage } from "../utils/get-current-stage";
+import { SetCurrentStage } from "../utils/set-current-stage";
 
 
 function isTextMessage(message: any): message is { text: string } {
@@ -94,8 +96,36 @@ adminPanelWizard.hears(adminOption[2], async (ctx) => {
     }
     
 })
+
+const stages = [
+    "after-registration-menu-wizard",
+    'after-approve-menu-wizard',
+    'competition-menu-wizard',
+     'post-event-menu-wizard',
+
+]
 adminPanelWizard.hears(adminOption[3], async (ctx) => {
-    // await ctx.scene.enter("join-team-wizard");    
+    const currentStage = await GetCurrentStage();
+    if(currentStage !== null) {
+        stages.findIndex((element, index) => {
+            if(element === currentStage && index != 0) {
+                SetCurrentStage(stages[index - 1]);
+                ctx.reply(`Ви перейшли на попередню стадію`);
+            }
+         })
+    }
+})
+adminPanelWizard.hears(adminOption[4], async (ctx) => {
+    const currentStage = await GetCurrentStage();
+    if(currentStage !== null) {
+        stages.findIndex((element, index) => {
+            if(element === currentStage && index !== stages.length) {
+                SetCurrentStage(stages[index + 1]);
+                ctx.reply(`Ви перейшли на наступну стадію`);
+            }
+         })
+    }
+    
 })
 
 adminPanelWizard.hears(adminOption[5], async (ctx) => {

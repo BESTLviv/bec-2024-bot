@@ -61,7 +61,6 @@ const teamSchema = new Schema({
     members: [{ type: Schema.Types.ObjectId, ref: 'users' }],
     technologyList: String,
     testTask: String || Document,
-    // repository: String,
     isSendTest: Boolean,
     isApprove: Boolean,
 });

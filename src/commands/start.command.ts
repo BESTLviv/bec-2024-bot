@@ -10,13 +10,7 @@ export class StartCommand extends Command {
 
     handle(): void {
         this.bot.start(async (ctx) => {
-            const teamDB = new currentStageModel({
-                name: "after-registration-menu-wizard",
-
-            });
-            await teamDB.save();
-
-
+           
             const user = await UserModel.findOne({ chatId: ctx.chat.id });
             if(!user?.isRegistered || !user) {
                 ctx.session.chatId = ctx.chat.id;
