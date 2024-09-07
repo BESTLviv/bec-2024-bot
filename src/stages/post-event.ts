@@ -2,47 +2,43 @@ import { IBotContext } from "../context/context.interface";
 import { Markup, Scenes } from "telegraf";
 import vacancies from '../data/vacancies.json';
 import { ConfigService } from "../config/config.service";
-import { menuKeyboardCompetition, menuOptionCompetition } from "../markups/competition.markups";
+import { postEventKeyboard, postEventOption } from "../markups/post-event.markups";
 
-const competitionMenuWizard = new Scenes.WizardScene<IBotContext>(
-    'competition-menu-wizard',
+
+const afterEventWizard = new Scenes.WizardScene<IBotContext>(
+    'post-event-menu-wizard',
     async (ctx) => {
-        await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboardCompetition);
+        await ctx.reply("Вітаємо на Best Engineering Competition! Кінець");
     },
 
 );
 
-competitionMenuWizard.hears(menuOptionCompetition[0], async (ctx) => {
-    await ctx.reply("Доступні вакансії:\n\n");
-    for (const vacancy of vacancies.vacancies) {
-        await ctx.reply(`${vacancy.text}\n`);
-    }
-});
-competitionMenuWizard.hears(menuOptionCompetition[1], async (ctx) => {
-     return ctx.scene.enter('more-info-menu-wizard');   
-})
-competitionMenuWizard.hears(menuOptionCompetition[2], async (ctx) => {
-    await ctx.reply('Приєднуйся до нашого чату учасників',  Markup.inlineKeyboard([
-        Markup.button.url('Тик', 'https://t.me/+r1HLUVqycngxYzZi')
-    ]));   
-})
-competitionMenuWizard.hears(menuOptionCompetition[3], async (ctx) => {
-    await ctx.reply('Ось посилання на загальну інформацію для учасників, обов\'язково прочитати!',  Markup.inlineKeyboard([
-        Markup.button.url('Тик', 'https://t.me/+r1HLUVqycngxYzZi')
-    ]));  
-})
-competitionMenuWizard.hears(menuOptionCompetition[4], async (ctx) => {
-    await ctx.sendPhoto({ source: './public/WhatIsBest.jpg' })
-})
-competitionMenuWizard.hears(menuOptionCompetition[5], async (ctx) => {
-    return ctx.scene.enter('my-team-joined-menu-wizard');
-})
+// afterEventWizard.hears(postEventOption[0], async (ctx) => {
+//     await ctx.reply("Доступні вакансії:\n\n");
+//     for (const vacancy of vacancies.vacancies) {
+//         await ctx.reply(`${vacancy.text}\n`);
+//     }
+// });
+// afterEventWizard.hears(postEventOption[1], async (ctx) => {
+//     return ctx.scene.enter('more-info-menu-wizard');   
+// })
+// afterEventWizard.hears(postEventOption[2], async (ctx) => {
+//     await ctx.reply('Ось посилання на фідбек-форму, ваш відгук буде дуже корисним для нас!',  Markup.inlineKeyboard([
+//         Markup.button.url('Тик', 'https://t.me/+r1HLUVqycngxYzZi')
+//     ]));   
+// })
+// afterEventWizard.hears(postEventOption[3], async (ctx) => {
+//     await ctx.reply('Ось посилання на загальну інформацію для учасників, обов\'язково прочитати!',  Markup.inlineKeyboard([
+//         Markup.button.url('Тик', 'https://t.me/+r1HLUVqycngxYzZi')
+//     ]));  
+// })
+
 
 const adminSecret = new ConfigService().get("ADMIN_WORD");
-competitionMenuWizard.hears(adminSecret, async (ctx) => {
+afterEventWizard.hears(adminSecret, async (ctx) => {
     return ctx.scene.enter('admin-panel-wizard');
 });
 
 
 
-export default competitionMenuWizard;
+export default afterEventWizard;

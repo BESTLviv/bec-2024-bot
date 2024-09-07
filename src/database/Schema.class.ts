@@ -66,5 +66,10 @@ const teamSchema = new Schema({
     isApprove: Boolean,
 });
 
+const currentStageSchema = new Schema({
+    name: String,
+});
+
 export const UserModel = model('User', UserSchema, "users");
 export const teamModel = model('Team', teamSchema, "teams");
+export const currentStageModel = model('CurrentStage', currentStageSchema, "currentStage");

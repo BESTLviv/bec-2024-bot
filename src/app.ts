@@ -15,31 +15,32 @@ import myTeamJoinedMenuWizard from "./utils/my-team-joined.scene";
 import adminPanelWizard from "./stages/admin-panel";
 import afterApproveMenuWizard from "./stages/after-approve";
 import competitionMenuWizard from "./stages/competition";
+import afterEventWizard from "./stages/post-event";
+import express from 'express';
+
 class Bot {
     bot: Telegraf<IBotContext>;
     stage: Scenes.Stage<IBotContext>;
 
     constructor(private readonly configService: IConfigService) {
         this.bot = new Telegraf<IBotContext>(this.configService.get("TOKEN"))
-        // this.bot.use((new LocalSession({ database: "sessions.json"})).middleware())
+        
 
         ConnectDB();
         this.bot.use(session());
-        this.stage = new Scenes.Stage<IBotContext>([registrationWizard, afterRegistrationMenuWizard, createTeamMenuWizard, joinTeamWizard, moreInfoMenuWizard, myTeamMenuWizard, myTeamJoinedMenuWizard, adminPanelWizard, afterApproveMenuWizard, competitionMenuWizard]);
+        this.stage = new Scenes.Stage<IBotContext>([registrationWizard, afterRegistrationMenuWizard, createTeamMenuWizard, joinTeamWizard, moreInfoMenuWizard, myTeamMenuWizard, myTeamJoinedMenuWizard, adminPanelWizard, afterApproveMenuWizard, competitionMenuWizard, afterEventWizard]);
         this.bot.use(this.stage.middleware());
     }
 
     init() {
-        const startCommand = new StartCommand(this.bot, this.stage);
+        const startCommand = new StartCommand(this.bot);
         startCommand.handle();
         this.bot.launch();
     }
 }
 
-import express from 'express';
 const app = express();
 const port = process.env.PORT || 3000;
-
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
