@@ -101,7 +101,7 @@ const stages = [
     "after-registration-menu-wizard",
     'after-approve-menu-wizard',
     'competition-menu-wizard',
-     'post-event-menu-wizard',
+    'post-event-menu-wizard',
 
 ]
 adminPanelWizard.hears(adminOption[3], async (ctx) => {
@@ -109,7 +109,7 @@ adminPanelWizard.hears(adminOption[3], async (ctx) => {
     if(currentStage !== null) {
         stages.findIndex((element, index) => {
             if(element === currentStage && index != 0) {
-                SetCurrentStage(stages[index - 1]);
+                SetCurrentStage( stages[index - 1]);
                 ctx.reply(`Ви перейшли на попередню стадію`);
             }
          })
@@ -119,8 +119,8 @@ adminPanelWizard.hears(adminOption[4], async (ctx) => {
     const currentStage = await GetCurrentStage();
     if(currentStage !== null) {
         stages.findIndex((element, index) => {
-            if(element === currentStage && index !== stages.length) {
-                SetCurrentStage(stages[index + 1]);
+            if(element === currentStage && index !== stages.length - 1) {
+                SetCurrentStage( stages[index + 1]);
                 ctx.reply(`Ви перейшли на наступну стадію`);
             }
          })
