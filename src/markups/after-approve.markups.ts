@@ -1,6 +1,6 @@
 import { Markup } from "telegraf";
 
-export const menuOptionAfterApprove = ['Вакансії', 'Більше інформації про BEC', "Чат для учасників івену", 'Моя команда']
+export const menuOptionAfterApprove = ['Вакансії', 'Більше інформації про BEC', "Чат для учасників івенту", 'Моя команда']
 export const menuKeyboardAfterApprove = Markup.keyboard([
     [  
         Markup.button.callback(menuOptionAfterApprove[0], "menu_vacancies"),
