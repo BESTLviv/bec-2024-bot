@@ -8,6 +8,7 @@ import { ConfigService } from "../config/config.service";
 const afterRegistrationMenuWizard = new Scenes.WizardScene<IBotContext>(
     'after-registration-menu-wizard',
     async (ctx) => {
+        console.log("after-registration-menu-wizard")
         await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboard);
     },
 

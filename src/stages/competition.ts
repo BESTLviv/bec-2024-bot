@@ -10,6 +10,7 @@ import { menuKeyboardCompetition, menuOptionCompetition } from "../markups/compe
 const competitionMenuWizard = new Scenes.WizardScene<IBotContext>(
     'competition-menu-wizard',
     async (ctx) => {
+        console.log("competition-menu-wizard")
         await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboardCompetition);
     },
 

@@ -17,26 +17,38 @@ import afterApproveMenuWizard from "./stages/after-approve";
 import competitionMenuWizard from "./stages/competition";
 import afterEventWizard from "./stages/post-event";
 import express from 'express';
+import { UserModel } from "./database/Schema.class";
 
-class Bot {
-    bot: Telegraf<IBotContext>;
+export class Bot {
     stage: Scenes.Stage<IBotContext>;
     telegram: any;
+    static bot: Telegraf<IBotContext>;
 
     constructor(private readonly configService: IConfigService) {
-        this.bot = new Telegraf<IBotContext>(this.configService.get("TOKEN"))
+        Bot.bot = new Telegraf<IBotContext>(this.configService.get("TOKEN"))
         
 
         ConnectDB();
-        this.bot.use(session());
+        Bot.bot.use(session());
         this.stage = new Scenes.Stage<IBotContext>([registrationWizard, afterRegistrationMenuWizard, createTeamMenuWizard, joinTeamWizard, moreInfoMenuWizard, myTeamMenuWizard, myTeamJoinedMenuWizard, adminPanelWizard, afterApproveMenuWizard, competitionMenuWizard, afterEventWizard]);
-        this.bot.use(this.stage.middleware());
+        Bot.bot.use(this.stage.middleware());
     }
 
     init() {
-        const startCommand = new StartCommand(this.bot);
+        const startCommand = new StartCommand(Bot.bot);
         startCommand.handle();
-        this.bot.launch();
+        Bot.bot.launch();
+    }
+    static async resetStart() {
+        // Ви можете додати код, який буде використовувати статичні ресурси класу
+        const users = await UserModel.find({}); // Приклад використання бази даних
+
+        for (const user of users) {
+            if (user.chatId) {
+                const startCommand = new StartCommand(Bot.bot);
+                startCommand.handle();
+            }
+        }
     }
 }
 

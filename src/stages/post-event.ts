@@ -8,6 +8,7 @@ import { postEventKeyboard, postEventOption } from "../markups/post-event.markup
 const afterEventWizard = new Scenes.WizardScene<IBotContext>(
     'post-event-menu-wizard',
     async (ctx) => {
+        console.log("post-event-menu-wizard")
         await ctx.reply("Вітаємо на Best Engineering Competition! Кінець");
     },
 

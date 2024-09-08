@@ -21,6 +21,7 @@ export class StartCommand extends Command {
                 await ctx.scene.enter('registration-wizard');
             } else {
                 const currentStage = await GetCurrentStage();
+                console.log("11", currentStage)
                 if(currentStage == null) {
                     console.log("Не визначенно теперешньої секції")
                     return;

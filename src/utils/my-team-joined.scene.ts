@@ -1,7 +1,7 @@
 import { IBotContext } from "../context/context.interface";
 import { Scenes } from "telegraf";
 import { UserModel, teamModel } from "../database/Schema.class";
-import { menuKeyboard, teamProfileAfterApprove, teamProfileOption } from "../markups/after-registration.class";
+import { menuKeyboard, teamProfileAfterApprove, teamProfileOption, teamProfileboard } from "../markups/after-registration.class";
 import { workingInlineButton, workingOption } from "../markups/registration.markups";
 import * as path from 'path';
 import { getTeamInfo } from "./get-team-info";
@@ -27,8 +27,11 @@ const myTeamJoinedMenuWizard = new Scenes.WizardScene<IBotContext>(
             if(currentStage == "competition-menu-wizard") {
                 await ctx.reply(teamInfo, teamCompetitionboard);
             }
-            else{
+            else if (currentStage == "after-approve-menu-wizard"){
                 await ctx.reply(teamInfo, teamProfileAfterApprove);
+            }
+            else if (currentStage == "after-registration-menu-wizard"){
+                await ctx.reply(teamInfo, teamProfileboard);
             }
           
 

@@ -21,6 +21,7 @@ let option: string;
 const adminPanelWizard = new Scenes.WizardScene<IBotContext>(
     'admin-panel-wizard',
     async (ctx) => {
+        console.log("admin-panel-wizard")
         await ctx.reply('Вітаємо в адмін панелі!', adminKeyboard);
     }, 
     //----------------------------------sendOption[0]-------------------------------------

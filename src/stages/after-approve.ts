@@ -7,6 +7,7 @@ import { menuKeyboardAfterApprove, menuOptionAfterApprove } from "../markups/aft
 const afterApproveMenuWizard = new Scenes.WizardScene<IBotContext>(
     'after-approve-menu-wizard',
     async (ctx) => {
+        console.log("after-approve-menu-wizard")
         await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboardAfterApprove);
     },
 
