@@ -171,7 +171,7 @@ myTeamJoinedMenuWizard.hears(teamProfileOption[0], async (ctx) => {
             const stage = await currentStageModel.findOne({})
 
             if(stage?.isTestReady) {
-                const filePath = path.resolve(__dirname, "C:/Users/Admin/bec24-bot/public/file_0.pdf");
+                const filePath = path.resolve(__dirname, "./public/file_0.pdf");
                 if(ctx.chat) {
                     await ctx.reply("Тестове завдання готове!\nОсь посилання на умови завдання: ");
                     await ctx.telegram.sendDocument(ctx.chat.id, { source: filePath });
