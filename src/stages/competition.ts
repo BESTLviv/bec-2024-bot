@@ -6,12 +6,17 @@ import vacancies from '../data/vacancies.json';
 import { ConfigService } from "../config/config.service";
 import { menuKeyboardAfterApprove, menuOptionAfterApprove } from "../markups/after-approve.markups";
 import { menuKeyboardCompetition, menuOptionCompetition } from "../markups/competition.markups";
+import { UpdateStage } from "../utils/update-stage";
+import { GetCurrentStage } from "../utils/get-current-stage";
 
 const competitionMenuWizard = new Scenes.WizardScene<IBotContext>(
     'competition-menu-wizard',
     async (ctx) => {
         console.log("competition-menu-wizard")
-        await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboardCompetition);
+        UpdateStage(ctx, 'competition-menu-wizard');
+        if('competition-menu-wizard' == await GetCurrentStage()) {
+            await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboardCompetition);
+        }
     },
 
 );

@@ -3,7 +3,7 @@ import { IBotContext } from "../context/context.interface";
 import { IUser } from "../database/Schema.class";
 import { isTextMessage, isPhotoMessage, isDocumentMessage } from "./generaly-utils.functions";
 
-export async function sendMessage(ctx: IBotContext, users: IUser[], inputMessage: Message) {
+export async function sendMessage(ctx: IBotContext, users: any[], inputMessage: Message) {
     if (ctx.chat) {
         if (isTextMessage(inputMessage)) {
             const message = inputMessage.text.trim();

@@ -1,34 +1,45 @@
 import { IBotContext } from "../context/context.interface";
 import { UserModel } from "../database/Schema.class";
-import { Context, Scenes, Telegraf } from "telegraf"; // Не забудьте імпортувати Scenes, якщо воно використовується
-import { bot } from "../app";
-import { Bot } from "../app";
-export async function UpdateStage(ctx: IBotContext) {
-    Bot.resetStart()
-    // try {
-    //     // Отримуємо всіх користувачів з бази даних
-    //     const users = await UserModel.find({});
+import { isTextMessage } from "./generaly-utils.functions";
+import { GetCurrentStage } from "./get-current-stage";
+import { sendMessage, wrapStringAsMessage } from "./send-message";
 
-    //     if (!users || users.length === 0) {
-    //         console.log("Користувачів не знайдено");
-    //         return;
-    //     }
+export async function UpdateStage(ctx: IBotContext, currentScene: string) {
 
-    //    // Проходимо по кожному користувачу
-    //    for (const user of users) {
-    //     console.log(user)
-    //     // Перевіряємо, що chatId визначений і є числом або рядком
-    //     if (user.chatId !== null && user.chatId !== undefined) {
-    //         await ctx.reply("йес")
-    //         await bot.telegram.sendMessage(user.chatId, '/start');
+   
+    
+    const currentStage = await GetCurrentStage();
+    console.log(currentStage, currentScene)
+    if(currentStage != null && currentStage !== currentScene) {
+        ctx.session.stage = currentStage
+        await ctx.scene.enter(currentStage);
+        
+        
+    }
+
+
+    
+    // // Проверяем, что ctx.chat существует
+    // if(ctx.chat && 'id' in ctx.chat && isTextMessage(ctx.chat)) {
+    //     const user = await UserModel.findOne({ chatId: ctx.chat.id });
+        
+    //     // Проверяем, что пользователь зарегистрирован
+    //     if(!user?.isRegistered || !user) {
+    //         ctx.session.chatId = ctx.chat.id;
+
+    //         // Проверяем, что ctx.from и ctx.from.username существуют
+    //         if(ctx.from && ctx.from.username) {
+    //             ctx.session.userName = ctx.from.username;
+    //         }
+    //         await ctx.scene.enter('registration-wizard');
     //     } else {
-    //         await ctx.reply("no")
-    //     }
-
-    // }
-
-    //     console.log("Команда /start успішно виконана для всіх користувачів.");
-    // } catch (error) {
-    //     console.error("Помилка при відправці команди /start для користувачів:", error);
+    //         const currentStage = await GetCurrentStage();
+    //         if(currentStage == null) {
+    //             console.log("Не визначенно теперешньої секції");
+    //             return;
+    //         }
+    //         ctx.session.stage = currentStage;
+    //         await ctx.scene.enter(currentStage);
+    //     }     
     // }
 }

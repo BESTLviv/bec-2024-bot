@@ -14,7 +14,7 @@ const moreInfoMenuWizard = new Scenes.WizardScene<IBotContext>(
         const { keyboard, scene } = await getSceneAndKeyboard(ctx);
         currentStage = scene;
         currentSceneKeyboard = keyboard;
-        await ctx.reply(currentStage);  
+
         await ctx.reply(moreInfo.main, infoKeyboard);  
     }
 );

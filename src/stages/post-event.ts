@@ -3,13 +3,19 @@ import { Markup, Scenes } from "telegraf";
 import vacancies from '../data/vacancies.json';
 import { ConfigService } from "../config/config.service";
 import { postEventKeyboard, postEventOption } from "../markups/post-event.markups";
+import { UpdateStage } from "../utils/update-stage";
+import { menuKeyboardCompetition } from "../markups/competition.markups";
+import { GetCurrentStage } from "../utils/get-current-stage";
 
 
 const afterEventWizard = new Scenes.WizardScene<IBotContext>(
     'post-event-menu-wizard',
     async (ctx) => {
         console.log("post-event-menu-wizard")
-        await ctx.reply("Вітаємо на Best Engineering Competition! Кінець");
+        UpdateStage(ctx, "post-event-menu-wizard");
+        if('post-event-menu-wizard' == await GetCurrentStage()) {
+            await ctx.reply("Вітаємо на Best Engineering Competition!",  Markup.removeKeyboard());
+        }
     },
 
 );

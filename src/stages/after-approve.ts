@@ -3,12 +3,20 @@ import { Markup, Scenes } from "telegraf";
 import vacancies from '../data/vacancies.json';
 import { ConfigService } from "../config/config.service";
 import { menuKeyboardAfterApprove, menuOptionAfterApprove } from "../markups/after-approve.markups";
+import { UpdateStage } from "../utils/update-stage";
+import { GetCurrentStage } from "../utils/get-current-stage";
 
 const afterApproveMenuWizard = new Scenes.WizardScene<IBotContext>(
     'after-approve-menu-wizard',
     async (ctx) => {
-        console.log("after-approve-menu-wizard")
-        await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboardAfterApprove);
+        console.log("----------------after-approve-menu-wizard")
+        console.log("1")
+        UpdateStage(ctx, "after-approve-menu-wizard");
+        console.log("log")
+        if('after-approve-menu-wizard' == await GetCurrentStage()) {
+            await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboardAfterApprove);
+        }
+       
     },
 
 );

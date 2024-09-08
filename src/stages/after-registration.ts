@@ -4,12 +4,19 @@ import { menuKeyboard } from "../markups/after-registration.class";
 import { menuOption } from "../markups/after-registration.class";
 import vacancies from '../data/vacancies.json';
 import { ConfigService } from "../config/config.service";
+import { GetCurrentStage } from "../utils/get-current-stage";
+import { UpdateStage } from "../utils/update-stage";
 
 const afterRegistrationMenuWizard = new Scenes.WizardScene<IBotContext>(
     'after-registration-menu-wizard',
     async (ctx) => {
         console.log("after-registration-menu-wizard")
-        await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboard);
+        console.log("1")
+        UpdateStage(ctx, 'after-registration-menu-wizard');
+        console.log("log")
+        if('after-registration-menu-wizard' == await GetCurrentStage()) {
+            await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboard);
+        }
     },
 
 );

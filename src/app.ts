@@ -27,7 +27,6 @@ export class Bot {
     constructor(private readonly configService: IConfigService) {
         Bot.bot = new Telegraf<IBotContext>(this.configService.get("TOKEN"))
         
-
         ConnectDB();
         Bot.bot.use(session());
         this.stage = new Scenes.Stage<IBotContext>([registrationWizard, afterRegistrationMenuWizard, createTeamMenuWizard, joinTeamWizard, moreInfoMenuWizard, myTeamMenuWizard, myTeamJoinedMenuWizard, adminPanelWizard, afterApproveMenuWizard, competitionMenuWizard, afterEventWizard]);
@@ -60,5 +59,3 @@ app.listen(port, () => {
 
 const bot = new Bot(new ConfigService());
 bot.init()
-
-export { bot };
