@@ -109,7 +109,7 @@ adminPanelWizard.hears(adminOption[3], async (ctx) => {
     if(currentStage !== null) {
         stages.findIndex((element, index) => {
             if(element === currentStage && index != 0) {
-                SetCurrentStage( stages[index - 1]);
+                SetCurrentStage(ctx, stages[index - 1]);
                 ctx.reply(`Ви перейшли на попередню стадію`);
             }
          })
@@ -120,7 +120,7 @@ adminPanelWizard.hears(adminOption[4], async (ctx) => {
     if(currentStage !== null) {
         stages.findIndex((element, index) => {
             if(element === currentStage && index !== stages.length - 1) {
-                SetCurrentStage( stages[index + 1]);
+                SetCurrentStage(ctx, stages[index + 1]);
                 ctx.reply(`Ви перейшли на наступну стадію`);
             }
          })
