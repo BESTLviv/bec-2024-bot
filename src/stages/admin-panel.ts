@@ -120,7 +120,7 @@ adminPanelWizard.hears(adminOption[4], async (ctx) => {
     const currentStage = await GetCurrentStage();
     if(currentStage !== null) {
         stages.findIndex((element, index) => {
-            if(element === currentStage && index !== stages.length - 1) {
+            if(element === currentStage && index !== 1) {
                 SetCurrentStage(ctx, stages[index + 1]);
                 ctx.reply(`Ви перейшли на наступну стадію`);
             }

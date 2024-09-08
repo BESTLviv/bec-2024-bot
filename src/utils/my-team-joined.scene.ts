@@ -1,12 +1,11 @@
 import { IBotContext } from "../context/context.interface";
 import { Scenes } from "telegraf";
 import { UserModel, teamModel } from "../database/Schema.class";
-import { menuKeyboard, teamProfileAfterApprove, teamProfileOption, teamProfileboard } from "../markups/after-registration.class";
+import { menuKeyboard, teamCompetitionOption, teamProfileAfterApprove, teamProfileOption, teamProfileboard } from "../markups/after-registration.class";
 import { workingInlineButton, workingOption } from "../markups/registration.markups";
 import * as path from 'path';
 import { getTeamInfo } from "./get-team-info";
 import { isTextMessage, isDocumentMessage, getSceneAndKeyboard } from "./generaly-utils.functions";
-import { teamCompetitionOption, teamCompetitionboard } from "../markups/competition.markups";
 
 let currentSceneKeyboard: any;
 let currentStage: string;
@@ -25,7 +24,7 @@ const myTeamJoinedMenuWizard = new Scenes.WizardScene<IBotContext>(
             const teamInfo = await getTeamInfo(team);
             console.log(currentSceneKeyboard)
             if(currentStage == "competition-menu-wizard") {
-                await ctx.reply(teamInfo, teamCompetitionboard);
+                await ctx.reply(teamInfo, teamProfileAfterApprove);
             }
             else if (currentStage == "after-approve-menu-wizard"){
                 await ctx.reply(teamInfo, teamProfileAfterApprove);
@@ -185,8 +184,8 @@ myTeamJoinedMenuWizard.hears(teamProfileOption[0], async (ctx) => {
     //         await ctx.sendDocument({ source: './public/file_3.pdf' });
     //     }
     // })
-    myTeamJoinedMenuWizard.hears(teamCompetitionOption[2], async (ctx) => {
-        if(currentStage == "competition-menu-wizard") {
+    myTeamJoinedMenuWizard.hears(teamCompetitionOption[1], async (ctx) => {
+        if(currentStage == "after-approve-menu-wizard") {
             let contacts = "Ось вам контакти організаторів:\n"
             contacts += "Руслан Явір - @Shiza1705\n"
             contacts += "Братюк Владислав - @bratiuk\n"

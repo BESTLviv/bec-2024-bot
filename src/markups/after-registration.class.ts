@@ -75,13 +75,16 @@ export const teamProfileboard = Markup.keyboard([
     ],
 
 ]).resize();
-
+export const teamCompetitionOption = ["Назад",  "Команді потрібна допомога", "Додати своє CV",]
 export const teamProfileAfterApprove = Markup.keyboard([
     [  
-        Markup.button.callback(teamProfileOption[0], "team-profile_back"),
+        Markup.button.callback(teamCompetitionOption[0], "team-profile_back"),
     ],
     [
-        Markup.button.callback(teamProfileOption[3], "team-profile_add-cv"),
+        Markup.button.callback(teamCompetitionOption[1], "team-profile_help"),
+    ],
+    [
+        Markup.button.callback(teamCompetitionOption[2], "team-profile_add-cv"),
     ],
 
 

@@ -5,18 +5,25 @@ import { ConfigService } from "../config/config.service";
 import { menuKeyboardAfterApprove, menuOptionAfterApprove } from "../markups/after-approve.markups";
 import { UpdateStage } from "../utils/update-stage";
 import { GetCurrentStage } from "../utils/get-current-stage";
+import { UserModel, teamModel } from "../database/Schema.class";
 
 const afterApproveMenuWizard = new Scenes.WizardScene<IBotContext>(
     'after-approve-menu-wizard',
     async (ctx) => {
-        console.log("----------------after-approve-menu-wizard")
-        console.log("1")
-        UpdateStage(ctx, "after-approve-menu-wizard");
-        console.log("log")
-        if('after-approve-menu-wizard' == await GetCurrentStage()) {
-            await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboardAfterApprove);
-        }
        
+        UpdateStage(ctx, "after-approve-menu-wizard");
+        if(ctx.chat) {  
+            const user = await UserModel.findOne({ chatId: ctx.chat?.id });
+            const team = await teamModel.findById(user?.team)
+            if( team && team.isApprove) {
+                if('after-approve-menu-wizard' == await GetCurrentStage()) {
+                    await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboardAfterApprove);
+                }
+            }
+            else {
+                await ctx.reply("На жаль, ви не перейшли на наступний етап", );
+            }
+        }
     },
 
 );

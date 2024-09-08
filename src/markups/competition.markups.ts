@@ -15,14 +15,14 @@ export const menuKeyboardCompetition = Markup.keyboard([
 
 ]).resize();
 
-export const teamCompetitionOption = ["Назад", "Додати своє CV", "Команді потрібна допомога"]
-export const teamCompetitionboard = Markup.keyboard([
-    [  
-        Markup.button.callback(teamCompetitionOption[0], "team-profile_back"),
-        Markup.button.callback(teamCompetitionOption[1], "team-profile_add-repo"),
-    ],
-    [
-        Markup.button.callback(teamCompetitionOption[2], "team-profile_add-cv"),
-    ],
+// export const teamCompetitionOption = ["Назад", "Додати своє CV", "Команді потрібна допомога"]
+// export const teamCompetitionboard = Markup.keyboard([
+//     [  
+//         Markup.button.callback(teamCompetitionOption[0], "team-profile_back"),
+//         Markup.button.callback(teamCompetitionOption[1], "team-profile_add-repo"),
+//     ],
+//     [
+//         Markup.button.callback(teamCompetitionOption[2], "team-profile_add-cv"),
+//     ],
 
-]).resize();
+// ]).resize();
