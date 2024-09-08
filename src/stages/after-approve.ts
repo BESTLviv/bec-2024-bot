@@ -38,7 +38,7 @@ afterApproveMenuWizard.hears(menuOptionAfterApprove[1], async (ctx) => {
      return ctx.scene.enter('more-info-menu-wizard');   
 })
 afterApproveMenuWizard.hears(menuOptionAfterApprove[2], async (ctx) => {
-    await ctx.reply('Приєднуйся до нашого чату учасників',  Markup.inlineKeyboard([
+    await ctx.reply('Запрошуємо до спілкування з іншими учасниками 😋',  Markup.inlineKeyboard([
         Markup.button.url('Тик', 'https://t.me/+r1HLUVqycngxYzZi')
     ]));   
 })

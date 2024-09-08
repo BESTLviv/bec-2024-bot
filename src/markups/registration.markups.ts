@@ -33,7 +33,7 @@ export const courseInlineButton = Markup.keyboard([
     ],
 ]).resize().oneTime();
 
-export const whereOption = ["Через оголошення в університеті", "Через соц. мережі", "Черезa друзів", "Інше"]
+export const whereOption = ["Через оголошення в університеті", "Через соц. мережі", "Через друзів", "Інше"]
 export const whereInlineButton = Markup.keyboard([
     [
         Markup.button.callback(whereOption[0], "where_university"),
