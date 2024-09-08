@@ -10,7 +10,7 @@ export const menuKeyboardCompetition = Markup.keyboard([
         Markup.button.callback(menuOptionCompetition[2], "menu_chat"),
     ],
     [  
-        Markup.button.callback(menuOptionCompetition[5], "menu_my-team"),
+        Markup.button.callback(menuOptionCompetition[3], "menu_my-team"),
     ],
 
 ]).resize();
@@ -22,7 +22,7 @@ export const teamCompetitionboard = Markup.keyboard([
         Markup.button.callback(teamCompetitionOption[1], "team-profile_add-repo"),
     ],
     [
-        Markup.button.callback(teamCompetitionOption[3], "team-profile_add-cv"),
+        Markup.button.callback(teamCompetitionOption[2], "team-profile_add-cv"),
     ],
 
 ]).resize();

@@ -10,7 +10,7 @@ export const menuKeyboardAfterApprove = Markup.keyboard([
         Markup.button.callback(menuOptionAfterApprove[2], "menu_chat"),
     ],
     [  
-        Markup.button.callback(menuOptionAfterApprove[4], "menu_my-team"),
+        Markup.button.callback(menuOptionAfterApprove[3], "menu_my-team"),
     ],
 
 ]).resize();

@@ -180,12 +180,12 @@ myTeamJoinedMenuWizard.hears(teamProfileOption[0], async (ctx) => {
         }
     })
 
+    // myTeamJoinedMenuWizard.hears(teamCompetitionOption[2], async (ctx) => {
+    //     if(currentStage == "competition-menu-wizard") {
+    //         await ctx.sendDocument({ source: './public/file_3.pdf' });
+    //     }
+    // })
     myTeamJoinedMenuWizard.hears(teamCompetitionOption[2], async (ctx) => {
-        if(currentStage == "competition-menu-wizard") {
-            await ctx.sendDocument({ source: './public/file_3.pdf' });
-        }
-    })
-    myTeamJoinedMenuWizard.hears(teamCompetitionOption[3], async (ctx) => {
         if(currentStage == "competition-menu-wizard") {
             let contacts = "Ось вам контакти організаторів:\n"
             contacts += "Руслан Явір - @Shiza1705\n"

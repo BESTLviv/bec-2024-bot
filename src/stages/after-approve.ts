@@ -35,12 +35,12 @@ afterApproveMenuWizard.hears(menuOptionAfterApprove[2], async (ctx) => {
         Markup.button.url('Тик', 'https://t.me/+r1HLUVqycngxYzZi')
     ]));   
 })
+// afterApproveMenuWizard.hears(menuOptionAfterApprove[3], async (ctx) => {
+//     await ctx.reply('Ось посилання на загальну інформацію для учасників, обов\'язково прочитати!',  Markup.inlineKeyboard([
+//         Markup.button.url('Тик', 'https://t.me/+r1HLUVqycngxYzZi')
+//     ]));  
+// })
 afterApproveMenuWizard.hears(menuOptionAfterApprove[3], async (ctx) => {
-    await ctx.reply('Ось посилання на загальну інформацію для учасників, обов\'язково прочитати!',  Markup.inlineKeyboard([
-        Markup.button.url('Тик', 'https://t.me/+r1HLUVqycngxYzZi')
-    ]));  
-})
-afterApproveMenuWizard.hears(menuOptionAfterApprove[4], async (ctx) => {
     return ctx.scene.enter('my-team-joined-menu-wizard');
 })
 
