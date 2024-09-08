@@ -1,6 +1,6 @@
 import { IBotContext } from "../context/context.interface";
 import { Scenes } from "telegraf";
-import { UserModel, teamModel } from "../database/Schema.class";
+import { UserModel, currentStageModel, teamModel } from "../database/Schema.class";
 import { menuKeyboard, teamCompetitionOption, teamProfileAfterApprove, teamProfileOption, teamProfileboard } from "../markups/after-registration.class";
 import { workingInlineButton, workingOption } from "../markups/registration.markups";
 import * as path from 'path';
@@ -140,16 +140,23 @@ myTeamJoinedMenuWizard.hears(teamProfileOption[0], async (ctx) => {
 
     myTeamJoinedMenuWizard.hears(teamProfileOption[1], async (ctx) => {
         if(currentStage !== "after-approve-menu-wizard") {
-            const user = await UserModel.findOne({ chatId: ctx.chat.id });
-            const team = await teamModel.findById(user?.team);
-            if(team?.category === "Team Design") {
-                await ctx.reply("Введи посилання на ваш проєкт в Tinkercad'i");
+            const stage = await currentStageModel.findOne({})
+
+            if(stage?.isTestReady) {
+                const user = await UserModel.findOne({ chatId: ctx.chat.id });
+                const team = await teamModel.findById(user?.team);
+                if(team?.category === "Team Design") {
+                    await ctx.reply("Введи посилання на ваш проєкт в Tinkercad'i");
+                }
+                else if (team?.category === "Case Study") {
+                    await ctx.reply("Завантажте у чат pdf-файл з вашим завданням");
+                }
+                ctx.wizard.selectStep(1);
             }
-            else if (team?.category === "Case Study") {
-                await ctx.reply("Завантажте у чат pdf-файл з вашим завданням");
+            else {
+                await ctx.reply("Наразі тестового завдання ще нема, очікуйте інформацію про завдання");  
             }
         
-            ctx.wizard.selectStep(1);
         }
     })
     myTeamJoinedMenuWizard.hears(teamProfileOption[2], async (ctx) => {
@@ -161,12 +168,20 @@ myTeamJoinedMenuWizard.hears(teamProfileOption[0], async (ctx) => {
     })
     myTeamJoinedMenuWizard.hears(teamProfileOption[4], async (ctx) => {
         if(currentStage !== "after-approve-menu-wizard") {
-            await ctx.reply("Тестового завдання ще нема, очікуйте в майбутньому");
-            const filePath = path.resolve(__dirname, "C:/Users/Admin/Downloads/file_0.pdf");
-            if(ctx.chat) {
-                await ctx.reply("Тестове завдання готове!\nОсь посилання на умови завдання: ");
-                await ctx.telegram.sendDocument(ctx.chat.id, { source: filePath });
-            }    
+            const stage = await currentStageModel.findOne({})
+
+            if(stage?.isTestReady) {
+                const filePath = path.resolve(__dirname, "C:/Users/Admin/Downloads/file_0.pdf");
+                if(ctx.chat) {
+                    await ctx.reply("Тестове завдання готове!\nОсь посилання на умови завдання: ");
+                    await ctx.telegram.sendDocument(ctx.chat.id, { source: filePath });
+                }    
+            }
+            else {
+                await ctx.reply("Тестового завдання ще нема, очікуйте в майбутньому");
+            }
+            
+           
             ctx.message.text = "";
            return ctx.scene.enter('my-team-joined-menu-wizard'); 
         }  

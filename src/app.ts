@@ -22,32 +22,21 @@ import { UserModel } from "./database/Schema.class";
 export class Bot {
     stage: Scenes.Stage<IBotContext>;
     telegram: any;
-    static bot: Telegraf<IBotContext>;
+    bot: Telegraf<IBotContext>;
 
     constructor(private readonly configService: IConfigService) {
-        Bot.bot = new Telegraf<IBotContext>(this.configService.get("TOKEN"))
+       this.bot = new Telegraf<IBotContext>(this.configService.get("TOKEN"))
         
         ConnectDB();
-        Bot.bot.use(session());
+        this.bot.use(session());
         this.stage = new Scenes.Stage<IBotContext>([registrationWizard, afterRegistrationMenuWizard, createTeamMenuWizard, joinTeamWizard, moreInfoMenuWizard, myTeamMenuWizard, myTeamJoinedMenuWizard, adminPanelWizard, afterApproveMenuWizard, competitionMenuWizard, afterEventWizard]);
-        Bot.bot.use(this.stage.middleware());
+        this.bot.use(this.stage.middleware());
     }
 
     init() {
-        const startCommand = new StartCommand(Bot.bot);
+        const startCommand = new StartCommand(this.bot);
         startCommand.handle();
-        Bot.bot.launch();
-    }
-    static async resetStart() {
-        // Ви можете додати код, який буде використовувати статичні ресурси класу
-        const users = await UserModel.find({}); // Приклад використання бази даних
-
-        for (const user of users) {
-            if (user.chatId) {
-                const startCommand = new StartCommand(Bot.bot);
-                startCommand.handle();
-            }
-        }
+        this.bot.launch();
     }
 }
 
