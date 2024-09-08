@@ -11,14 +11,20 @@ export class StartCommand extends Command {
 
     handle(): void {
         this.bot.start(async (ctx) => {
-            // UpdateStage(ctx);
+            const currentStage = await GetCurrentStage();
             const user = await UserModel.findOne({ chatId: ctx.chat.id });
             if(!user?.isRegistered || !user) {
-                ctx.session.chatId = ctx.chat.id;
-                if(ctx.from.username) {
-                    ctx.session.userName = ctx.from.username;
+                if(currentStage == 'after-registration-menu-wizard') {
+                    ctx.session.chatId = ctx.chat.id;
+                    if(ctx.from.username) {
+                        ctx.session.userName = ctx.from.username;
+                    }
+                    await ctx.scene.enter('registration-wizard');
                 }
-                await ctx.scene.enter('registration-wizard');
+                else {
+                    ctx.reply("Нажаль час реєстрації минув, дивіться за останніми новинами про BEC разом з нами")
+                }
+                
             } else {
                 const currentStage = await GetCurrentStage();
                 console.log("11", currentStage)
