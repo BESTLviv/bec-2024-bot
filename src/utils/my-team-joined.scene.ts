@@ -8,7 +8,7 @@ import { getTeamInfo } from "./get-team-info";
 import { isTextMessage, isDocumentMessage, getSceneAndKeyboard } from "./generaly-utils.functions";
 
 let currentSceneKeyboard: any;
-let currentStage: string;
+let currentStage: any;
 
 const myTeamJoinedMenuWizard = new Scenes.WizardScene<IBotContext>(
     'my-team-joined-menu-wizard',

@@ -14,6 +14,12 @@ export class StartCommand extends Command {
             const currentStage = await GetCurrentStage();
             const user = await UserModel.findOne({ chatId: ctx.chat.id });
             if(!user?.isRegistered || !user) {
+
+                const user = new UserModel({
+                    chatId: ctx.chat.id,
+                });
+                await user.save();
+
                 if(currentStage == 'after-registration-menu-wizard') {
                     ctx.session.chatId = ctx.chat.id;
                     if(ctx.from.username) {

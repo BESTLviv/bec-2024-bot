@@ -3,6 +3,7 @@ import { UserModel, teamModel } from "../database/Schema.class";
 import { menuKeyboardAfterApprove } from "../markups/after-approve.markups";
 import { menuKeyboard } from "../markups/after-registration.class";
 import { menuKeyboardCompetition } from "../markups/competition.markups";
+import { GetCurrentStage } from "./get-current-stage";
 
 export async function GetUsersFromTeam(team: any) {
     const users: any[] = [];
@@ -52,7 +53,7 @@ export function isContactMessage(message: any): message is ContactMessage {
 }
 
 export async function getSceneAndKeyboard(ctx: IBotContext) {
-  const stage = ctx.session.stage;
+  const stage = await GetCurrentStage()
   switch (stage) {
     case 'after-approve-menu-wizard':
         return {
@@ -71,6 +72,7 @@ export async function getSceneAndKeyboard(ctx: IBotContext) {
     };
     default: {
         throw new Error(`Немає такої сцени ${stage}`)
+        
     }
         
   }
