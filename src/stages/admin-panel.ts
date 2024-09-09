@@ -8,6 +8,7 @@ import { sendMessage } from "../utils/send-message";
 import { GetCurrentStage } from "../utils/get-current-stage";
 import { SetCurrentStage } from "../utils/set-current-stage";
 import { UpdateStage } from "../utils/update-stage";
+import { getSceneAndKeyboard } from "../utils/generaly-utils.functions";
 
 
 function isTextMessage(message: any): message is { text: string } {
@@ -17,17 +18,17 @@ function isTextMessage(message: any): message is { text: string } {
 let selectedUsers: any[];
 let selectedTeam: any;
 let option: string;
-
+let currentStage: any;
+let currentSceneKeyboard: any;
 
 const adminPanelWizard = new Scenes.WizardScene<IBotContext>(
     'admin-panel-wizard',
     async (ctx) => {
         console.log("admin-panel-wizard")
-        UpdateStage(ctx, 'admin-panel-wizard');
-        if('admin-panel-wizard' == await GetCurrentStage()) {
-            await ctx.reply("Вітаємо в адмін панелі!", adminKeyboard);
-        }
-        
+        const { keyboard, scene } = await getSceneAndKeyboard(ctx);
+        currentStage = scene;
+        currentSceneKeyboard = keyboard;
+        await ctx.reply("Вітаємо в адмін панелі!", adminKeyboard);
     }, 
     //----------------------------------sendOption[0]-------------------------------------
     async (ctx) => {
@@ -135,7 +136,7 @@ adminPanelWizard.hears(adminOption[4], async (ctx) => {
 })
 
 adminPanelWizard.hears(adminOption[5], async (ctx) => {
-    await ctx.scene.enter("after-registration-menu-wizard"); 
+    return ctx.scene.enter(currentStage, currentSceneKeyboard);  
 })
 
 adminPanelWizard.action(/page_(\d+)/, async (ctx) => {
