@@ -70,7 +70,7 @@ export async function getSceneAndKeyboard(ctx: IBotContext) {
         keyboard: menuKeyboardCompetition
     };
     default: {
-        throw new Error("Немає такої сцени")
+        throw new Error(`Немає такої сцени ${stage}`)
     }
         
   }

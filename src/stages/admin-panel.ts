@@ -7,6 +7,7 @@ import { handleFilesAndSendArchive } from "../utils/download-cv";
 import { sendMessage } from "../utils/send-message";
 import { GetCurrentStage } from "../utils/get-current-stage";
 import { SetCurrentStage } from "../utils/set-current-stage";
+import { UpdateStage } from "../utils/update-stage";
 
 
 function isTextMessage(message: any): message is { text: string } {
@@ -22,7 +23,11 @@ const adminPanelWizard = new Scenes.WizardScene<IBotContext>(
     'admin-panel-wizard',
     async (ctx) => {
         console.log("admin-panel-wizard")
-        await ctx.reply('Вітаємо в адмін панелі!', adminKeyboard);
+        UpdateStage(ctx, 'after-registration-menu-wizard');
+        if('admin-panel-wizard' == await GetCurrentStage()) {
+            await ctx.reply("Вітаємо в адмін панелі!", adminKeyboard);
+        }
+        
     }, 
     //----------------------------------sendOption[0]-------------------------------------
     async (ctx) => {

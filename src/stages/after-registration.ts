@@ -10,10 +10,7 @@ import { UpdateStage } from "../utils/update-stage";
 const afterRegistrationMenuWizard = new Scenes.WizardScene<IBotContext>(
     'after-registration-menu-wizard',
     async (ctx) => {
-        console.log("after-registration-menu-wizard")
-        console.log("1")
         UpdateStage(ctx, 'after-registration-menu-wizard');
-        console.log("log")
         if('after-registration-menu-wizard' == await GetCurrentStage()) {
             await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboard);
         }
