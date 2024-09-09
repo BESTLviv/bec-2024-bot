@@ -23,7 +23,7 @@ const adminPanelWizard = new Scenes.WizardScene<IBotContext>(
     'admin-panel-wizard',
     async (ctx) => {
         console.log("admin-panel-wizard")
-        UpdateStage(ctx, 'after-registration-menu-wizard');
+        UpdateStage(ctx, 'admin-panel-wizard');
         if('admin-panel-wizard' == await GetCurrentStage()) {
             await ctx.reply("Вітаємо в адмін панелі!", adminKeyboard);
         }
