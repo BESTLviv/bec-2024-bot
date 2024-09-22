@@ -59,7 +59,7 @@ export const categoriesboard = Markup.keyboard([
 
 ]).resize();
 
-export const teamProfileOption = ["Назад", "Додати ваше виконане тестове завдання", "Змінити список технологій команди", "Додати своє CV", "Тестове завдання",  "Покинути команду"]
+export const teamProfileOption = ["Назад", "Додати ваше виконане тестове завдання", "Змінити список технологій команди", "Моє CV", "Тестове завдання",  "Покинути команду"]
 export const teamProfileboard = Markup.keyboard([
     [  
         Markup.button.callback(teamProfileOption[0], "team-profile_back"),
@@ -75,7 +75,7 @@ export const teamProfileboard = Markup.keyboard([
     ],
 
 ]).resize();
-export const teamCompetitionOption = ["Назад",  "Команді потрібна допомога", "Додати своє CV",]
+export const teamCompetitionOption = ["Назад",  "Команді потрібна допомога", "Моє CV",]
 export const teamProfileAfterApprove = Markup.keyboard([
     [  
         Markup.button.callback(teamCompetitionOption[0], "team-profile_back"),
@@ -88,4 +88,16 @@ export const teamProfileAfterApprove = Markup.keyboard([
     ],
 
 
+]).resize();
+
+export const resumeOption = [ "Надіслати готове CV", "Створити CV", "Подивитися завантажене CV", "Назад"]
+export const resumeKeyboard = Markup.keyboard([
+    [  
+        Markup.button.callback(resumeOption[0], "team-profile_backk"),
+        Markup.button.callback(resumeOption[1], "team-profile_help"),
+    ],
+    [
+        Markup.button.callback(resumeOption[2], "team-profile_add-cv"),
+        Markup.button.callback(resumeOption[3], "team-profile_back"),
+    ],
 ]).resize();

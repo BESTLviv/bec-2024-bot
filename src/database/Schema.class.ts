@@ -47,7 +47,7 @@ const UserSchema = new Schema({
         course: String,
         specialization: String,
         where: String,
-        isWorking: Boolean,
+        isWorking: String,
         email: String,
         phone: String,
     },

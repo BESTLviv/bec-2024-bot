@@ -11,14 +11,17 @@ export class StartCommand extends Command {
 
     handle(): void {
         this.bot.start(async (ctx) => {
+          
             const currentStage = await GetCurrentStage();
             const user = await UserModel.findOne({ chatId: ctx.chat.id });
-            if(!user?.isRegistered || !user) {
-
+            console.log(user, user?.isRegistered)
+            if(!user) {
                 const user = new UserModel({
                     chatId: ctx.chat.id,
                 });
                 await user.save();
+            }
+            if(!user?.isRegistered) {
 
                 if(currentStage == 'after-registration-menu-wizard') {
                     ctx.session.chatId = ctx.chat.id;
@@ -41,7 +44,8 @@ export class StartCommand extends Command {
                 ctx.session.stage = currentStage
                 await ctx.scene.enter(currentStage);
 
-            }        
+            }      
+            
         });    
     }
 

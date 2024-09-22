@@ -4,6 +4,9 @@ import { educationInlineButton, courseInlineButton, contactInlineButton, working
 import { UserModel } from "../database/Schema.class";
 import { courseOption, whereOption, workingOption, requestOption } from "../markups/registration.markups";
 import { isContactMessage } from "../utils/generaly-utils.functions";
+import { generatePDF } from "../utils/generate-pdf";
+
+
 
 function isTextMessage(message: any): message is { text: string } {
     return message && message.text !== undefined;
@@ -23,8 +26,14 @@ const registrationWizard = new Scenes.WizardScene<IBotContext>(
 
     async (ctx) => {
         if (isTextMessage(ctx.message)) {
+            console.log(ctx.message.text)
             const age = parseInt(ctx.message.text);
-            if (isNaN(age) || age < 1 || age > 100) {
+            console.log(age.toString(), ctx.message.text)
+            if(age.toString() !== ctx.message.text) {
+                await ctx.reply('Будь ласка, введіть коректний вік');
+                return;
+            }
+            if ((isNaN(age) || age < 1 || age > 100)) {
                 await ctx.reply('Будь ласка, введіть коректний вік');
                 return;
             } 
@@ -71,10 +80,10 @@ const registrationWizard = new Scenes.WizardScene<IBotContext>(
     async (ctx) => {
         if (isTextMessage(ctx.message)) {
             const text = ctx.message.text.trim();
-            if (courseOption.includes(text)) {
+            if (text) {
                 ctx.session.subInfo.course = text;
-                await ctx.reply('Ех, молодість...');
-                await ctx.reply(`Звідки дізнався/лась про змагання?`, whereInlineButton);
+                // await ctx.reply('Ех, молодість...');
+                await ctx.reply(`Звідки дізнався/лась про змагання? Вибери або впиши в чат`, whereInlineButton);
                 return ctx.wizard.next();
             } else {
                 await ctx.reply('Будь ласка, виберіть коректний курс.');
@@ -88,7 +97,7 @@ const registrationWizard = new Scenes.WizardScene<IBotContext>(
     async (ctx) => {
         if (isTextMessage(ctx.message)) {
             const text = ctx.message.text.trim();
-            if (whereOption.includes(text)) {
+            if (text) {
                 ctx.session.subInfo.where = text;
                 await ctx.reply('Дякую, що поділився/лась!');
                 await ctx.reply('Чи працюєш зараз в інженерії?', workingInlineButton);
@@ -105,8 +114,8 @@ const registrationWizard = new Scenes.WizardScene<IBotContext>(
     async (ctx) => {
         if (isTextMessage(ctx.message)) {
             const text = ctx.message.text.trim();
-            if (workingOption.includes(text)) {
-                ctx.session.subInfo.isWorking = text === workingOption[0] ? true : false;
+            if (text) {
+                ctx.session.subInfo.isWorking = text;
                 await ctx.reply('Ясненько, буду знати!');
                 await ctx.reply(`Тепер давай обміняємося контактами`, contactInlineButton);
                 return ctx.wizard.next();
@@ -144,7 +153,7 @@ const registrationWizard = new Scenes.WizardScene<IBotContext>(
             } else {
                 ctx.session.subInfo.email = email;
                 await ctx.reply('Дякую за таке знайомство!');
-                await ctx.reply(`Залишилося тільки надати згоду на обробку даних.`, requestDataInlineButton);
+                await ctx.reply(`Залишилося тільки надати згоду на обробку даних`, requestDataInlineButton);
                 return ctx.wizard.next();
             }
         } else {
@@ -158,6 +167,8 @@ const registrationWizard = new Scenes.WizardScene<IBotContext>(
             const newUser = new UserModel({...ctx.session });
             await newUser.save();
             await ctx.reply("Супер, реєстрація закінчилась!", Markup.removeKeyboard());
+            
+           
             await ctx.scene.enter('after-registration-menu-wizard');
         } else {
             await ctx.reply('Будь ласка, виберіть опцію для завершення реєстрації.');

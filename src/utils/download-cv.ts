@@ -8,7 +8,7 @@ import { IBotContext } from '../context/context.interface';
 type FileLink = string;
 
 // Функція для завантаження файлу з URL
-async function downloadFile(url: string, filePath: string): Promise<void> {
+export async function downloadFile(url: string, filePath: string): Promise<void> {
   const response = await axios({ url, responseType: 'stream' });
   response.data.pipe(fs.createWriteStream(filePath));
   return new Promise((resolve, reject) => {

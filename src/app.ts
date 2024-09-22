@@ -14,12 +14,11 @@ import myTeamMenuWizard from "./utils/my-team.scene";
 import myTeamJoinedMenuWizard from "./utils/my-team-joined.scene";
 import adminPanelWizard from "./stages/admin-panel";
 import afterApproveMenuWizard from "./stages/after-approve";
-import competitionMenuWizard from "./stages/competition";
-import afterEventWizard from "./stages/post-event";
 import express from 'express';
-import { UserModel } from "./database/Schema.class";
+import createResumeWizard from "./utils/create-resume.scene";
 
 export class Bot {
+
     stage: Scenes.Stage<IBotContext>;
     telegram: any;
     bot: Telegraf<IBotContext>;
@@ -29,7 +28,7 @@ export class Bot {
         
         ConnectDB();
         this.bot.use(session());
-        this.stage = new Scenes.Stage<IBotContext>([registrationWizard, afterRegistrationMenuWizard, createTeamMenuWizard, joinTeamWizard, moreInfoMenuWizard, myTeamMenuWizard, myTeamJoinedMenuWizard, adminPanelWizard, afterApproveMenuWizard, competitionMenuWizard, afterEventWizard]);
+        this.stage = new Scenes.Stage<IBotContext>([registrationWizard, afterRegistrationMenuWizard, createTeamMenuWizard, joinTeamWizard, moreInfoMenuWizard, myTeamMenuWizard, myTeamJoinedMenuWizard, adminPanelWizard, afterApproveMenuWizard, createResumeWizard]);
         this.bot.use(this.stage.middleware());
     }
 
@@ -38,6 +37,8 @@ export class Bot {
         startCommand.handle();
         this.bot.launch();
     }
+
+    
 }
 
 const app = express();

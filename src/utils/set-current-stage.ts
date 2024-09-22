@@ -11,6 +11,6 @@ export async function SetCurrentStage( ctx: IBotContext,stageName: string) {
     );
     const users = await UserModel.find({})
     if(users && users.length > 0) {
-        sendMessage(ctx, users, wrapStringAsMessage("Ура, нарешті почався новий етап, для того щоб оновити меню, введіть /reload"));
+        sendMessage(ctx, users, wrapStringAsMessage("Ура, нарешті почався новий етап, для того щоб оновити меню, введіть /start"));
     }
 }

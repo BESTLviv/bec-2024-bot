@@ -2,7 +2,6 @@ import { IBotContext } from "../context/context.interface";
 import { UserModel, teamModel } from "../database/Schema.class";
 import { menuKeyboardAfterApprove } from "../markups/after-approve.markups";
 import { menuKeyboard } from "../markups/after-registration.class";
-import { menuKeyboardCompetition } from "../markups/competition.markups";
 import { GetCurrentStage } from "./get-current-stage";
 
 export async function GetUsersFromTeam(team: any) {
@@ -65,15 +64,8 @@ export async function getSceneAndKeyboard(ctx: IBotContext) {
             scene: 'after-registration-menu-wizard',
             keyboard: menuKeyboard
         };
-    case 'competition-menu-wizard':
-    return {
-        scene: 'competition-menu-wizard',
-        keyboard: menuKeyboardCompetition
-    };
     default: {
         throw new Error(`Немає такої сцени ${stage}`)
-        
-    }
-        
+    } 
   }
 }

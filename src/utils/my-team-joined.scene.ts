@@ -1,7 +1,7 @@
 import { IBotContext } from "../context/context.interface";
 import { Scenes } from "telegraf";
 import { UserModel, currentStageModel, teamModel } from "../database/Schema.class";
-import { menuKeyboard, teamCompetitionOption, teamProfileAfterApprove, teamProfileOption, teamProfileboard } from "../markups/after-registration.class";
+import { menuKeyboard, resumeKeyboard, teamCompetitionOption, teamProfileAfterApprove, teamProfileOption, teamProfileboard } from "../markups/after-registration.class";
 import { workingInlineButton, workingOption } from "../markups/registration.markups";
 import * as path from 'path';
 import { getTeamInfo } from "./get-team-info";
@@ -84,26 +84,7 @@ const myTeamJoinedMenuWizard = new Scenes.WizardScene<IBotContext>(
         }
     },
     async (ctx) => {
-        if(ctx.message) {
-            if (isDocumentMessage(ctx.message)) {
-                const document = ctx.message.document;
-
-                if (document.mime_type === 'application/pdf') {
-                    const user = await UserModel.findOne({ chatId: ctx.chat?.id });
-                    if (user) {
-                        user.cv = document.file_id;
-                        
-                        await user.save();
-                        await ctx.reply("Ваше CV отримано та збережено!");
-                        return ctx.scene.enter('my-team-joined-menu-wizard');  
-                    }
-                } else {
-                    await ctx.reply("Будь ласка, надішліть PDF файл.");
-                }
-            } else {
-                await ctx.reply("Будь ласка, надішліть документ у форматі PDF.");
-            }
-        }
+        
     },
     async (ctx) => {
         if (isTextMessage(ctx.message)) {
@@ -211,8 +192,20 @@ myTeamJoinedMenuWizard.hears(teamProfileOption[0], async (ctx) => {
     })
 
 myTeamJoinedMenuWizard.hears(teamProfileOption[3], async (ctx) => {
-    await ctx.reply("Надішліть своє CV у вигляді PDF-файлу");
-    ctx.wizard.selectStep(3);   
+    await ctx.reply("Ви можете: надіслати своє готове резюме у вигляді PDF-файлу; покроково створити своє резюме, яке буде мати дизайн; подивитися своє завантажене CV.", resumeKeyboard)
+    const filePath = path.resolve(__dirname, '../../public/resume_test.pdf');
+  
+  try {
+    // Відправляємо документ з правильним шляхом
+    await ctx.telegram.sendDocument(ctx.chat?.id, { source: filePath }, {
+      caption: 'Ось приклад резюме, яке ви можете зробити за допомоги кнопки "Створити CV".'
+    });
+  } catch (error) {
+    console.error('Помилка під час відправки файлу:', error);
+    await ctx.reply('Сталася помилка під час відправки файлу.');
+  }
+    await ctx.scene.enter('create-resume-wizard');
+    // ctx.wizard.selectStep(3);   
 })
 
 

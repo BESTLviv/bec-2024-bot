@@ -11,7 +11,7 @@ export async function getTeamInfo(team: any): Promise<string> {
 
 
     if(team?.category === "Team Design") {
-        teamInfo += `Посилання на тестове завдання в Tinkercad: ${team?.testTask ? team?.testTask : "❌"}\n`;
+        teamInfo += `Посилання на тестове завдання: ${team?.testTask ? team?.testTask : "❌"}\n`;
     }
     else if (team?.category === "Case Study") {
         teamInfo += `PDF-файл з тестовим завданням: ${team?.testTask ? team?.testTask : "❌"}\n`;

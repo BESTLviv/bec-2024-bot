@@ -7,7 +7,8 @@ import { isTextMessage } from "./generaly-utils.functions";
 const team = {
     name: "",
     password: "",
-    categoty: ""
+    categoty: "",
+    technologyList: "",
 }
 
 const createTeamMenuWizard = new Scenes.WizardScene<IBotContext>(
@@ -52,8 +53,18 @@ const createTeamMenuWizard = new Scenes.WizardScene<IBotContext>(
             }
 
             team.categoty = categoty;
-            await ctx.reply("Тепер придумай пароль для команди",  Markup.removeKeyboard()); 
+            await ctx.reply("Тепер напиши список технологій, якими володіє ваша команда",  Markup.removeKeyboard()); 
             return ctx.wizard.next();  
+        }
+    },
+    async (ctx) => {
+        if (isTextMessage(ctx.message)) {
+            const listTechnology = ctx.message.text.trim();
+            if(ctx.chat) {
+                team.technologyList = listTechnology;
+                await ctx.reply("Тепер придумай пароль для команди",  Markup.removeKeyboard()); 
+                return ctx.wizard.next();   
+            }
         }
     },
     async (ctx) => {
@@ -79,6 +90,7 @@ const createTeamMenuWizard = new Scenes.WizardScene<IBotContext>(
                     password: team.password,
                     category: team.categoty,
                     members: user?._id,
+                    technologyList: team.technologyList,
                 });
                 user.team = teamDB._id;
                 await teamDB.save();

@@ -11,7 +11,7 @@ export interface SessionData extends Scenes.WizardSessionData {
         course: string;
         specialization: string;
         where: string;
-        isWorking: boolean;
+        isWorking: string;
         email: string;
         phone: string;
     };

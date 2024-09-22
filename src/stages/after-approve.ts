@@ -28,7 +28,20 @@ const afterApproveMenuWizard = new Scenes.WizardScene<IBotContext>(
 
 );
 
+const userLastMessageTime: { [userId: number]: number } = {};
+
 afterApproveMenuWizard.hears(menuOptionAfterApprove[0], async (ctx) => {
+
+    const userId = ctx.from.id;
+    const now = Date.now();
+
+    if (!userLastMessageTime[userId] || (now - userLastMessageTime[userId] > 2000)) {
+        userLastMessageTime[userId] = now;
+    } else {
+        ctx.reply('Забагато спроб виконати команду');
+        return;
+    }
+
     await ctx.reply("Доступні вакансії:\n\n");
     for (const vacancy of vacancies.vacancies) {
         await ctx.reply(`${vacancy.text}\n`);
@@ -55,6 +68,20 @@ const adminSecret = new ConfigService().get("ADMIN_WORD");
 afterApproveMenuWizard.hears(adminSecret, async (ctx) => {
     return ctx.scene.enter('admin-panel-wizard');
 });
+
+
+
+// afterApproveMenuWizard.on('text', (ctx) => {
+//     const userId = ctx.from.id;
+//     const now = Date.now();
+
+//     if (!userLastMessageTime[userId] || (now - userLastMessageTime[userId] > 2000)) {
+//         userLastMessageTime[userId] = now;
+//     } else {
+//         ctx.reply('Забагато спроб виконати команду');
+//     }
+// });
+
 
 
 

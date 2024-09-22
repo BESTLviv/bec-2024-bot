@@ -7,6 +7,7 @@ import { ConfigService } from "../config/config.service";
 import { GetCurrentStage } from "../utils/get-current-stage";
 import { UpdateStage } from "../utils/update-stage";
 
+
 const afterRegistrationMenuWizard = new Scenes.WizardScene<IBotContext>(
     'after-registration-menu-wizard',
     async (ctx) => {
@@ -18,7 +19,19 @@ const afterRegistrationMenuWizard = new Scenes.WizardScene<IBotContext>(
 
 );
 
+const userLastMessageTime: { [userId: number]: number } = {};
+
 afterRegistrationMenuWizard.hears(menuOption[0], async (ctx) => {
+    const userId = ctx.from.id;
+    const now = Date.now();
+
+    if (!userLastMessageTime[userId] || (now - userLastMessageTime[userId] > 2000)) {
+        userLastMessageTime[userId] = now;
+    } else {
+        ctx.reply('Забагато спроб виконати команду');
+        return;
+    }
+
     await ctx.reply("Доступні вакансії:\n\n");
     for (const vacancy of vacancies.vacancies) {
         await ctx.reply(`${vacancy.text}\n`);
@@ -35,6 +48,7 @@ const adminSecret = new ConfigService().get("ADMIN_WORD");
 afterRegistrationMenuWizard.hears(adminSecret, async (ctx) => {
     return ctx.scene.enter('admin-panel-wizard');
 });
+
 
 
 
