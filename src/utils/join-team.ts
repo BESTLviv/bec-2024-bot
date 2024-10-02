@@ -4,7 +4,7 @@ import { UserModel, teamModel } from "../database/Schema.class";
 import { backOption, backboard } from "../markups/after-registration.class";
 import { isTextMessage } from "./generaly-utils.functions";
 
-let team: any;
+// let team: any;
 
 const joinTeamWizard = new Scenes.WizardScene<IBotContext>(
     'join-team-wizard',
@@ -21,8 +21,8 @@ const joinTeamWizard = new Scenes.WizardScene<IBotContext>(
                 return  ctx.wizard.selectStep(1);
             } 
 
-            team = await teamModel.findOne({ name: name });
-            if(!team) {
+            ctx.session.team = await teamModel.findOne({ name: name });
+            if(!ctx.session.team) {
                 await ctx.reply('Такої команди не знайдено');
                 return  ctx.wizard.selectStep(1); 
             }
@@ -34,31 +34,35 @@ const joinTeamWizard = new Scenes.WizardScene<IBotContext>(
     async (ctx) => {
         if(isTextMessage(ctx.message)) {
             const password = ctx.message.text.trim();
-
-            if(team.password !== password) {
-                await ctx.reply("Невірний пароль"); 
-                return  ctx.wizard.selectStep(2);
+            if(ctx.session.team) {
+                if(ctx.session.team.password !== password) {
+                    await ctx.reply("Невірний пароль"); 
+                    return  ctx.wizard.selectStep(2);
+                }
+                if(ctx.session.team.members.length > 4) {
+                    await ctx.reply("В цій команді вже є максимальна кількість учасників."); 
+                    return  ctx.wizard.selectStep(2);  
+                }
+    
+                let user;
+                if(ctx.chat) {
+                    user = await UserModel.findOne({ chatId: ctx.chat.id });
+                }
+                if(!user) {
+                    await ctx.reply('Невдалося приєднатися до команди');
+                    return ctx.scene.enter("my-team-menu-wizard");  
+                }
+                user.team = ctx.session.team._id;
+                user.save();
+                ctx.session.team.members = [user._id, ...ctx.session.team.members]
+                ctx.session.team.save();
+    
+                await ctx.reply('Ви успішно доєдналися до команди');
+                return ctx.scene.enter("after-registration-menu-wizard");  
             }
-            if(team.members.length > 4) {
-                await ctx.reply("В цій команді вже є максимальна кількість учасників."); 
-                return  ctx.wizard.selectStep(2);  
+            else {
+                await ctx.reply("Введи коректний пароль до команди")
             }
-
-            let user;
-            if(ctx.chat) {
-                user = await UserModel.findOne({ chatId: ctx.chat.id });
-            }
-            if(!user) {
-                await ctx.reply('Невдалося приєднатися до команди');
-                return ctx.scene.enter("my-team-menu-wizard");  
-            }
-            user.team = team._id;
-            user.save();
-            team.members = [user._id, ...team.members]
-            team.save();
-
-            await ctx.reply('Ви успішно доєдналися до команди');
-            return ctx.scene.enter("after-registration-menu-wizard");  
         }
         else {
             await ctx.reply("Введи коректний пароль до команди")

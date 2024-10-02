@@ -1,10 +1,11 @@
 import { IBotContext } from "../context/context.interface";
 import { Markup, Scenes } from "telegraf";
-import { educationInlineButton, courseInlineButton, contactInlineButton, workingInlineButton, requestDataInlineButton, whereInlineButton } from "../markups/registration.markups";
+import { educationInlineButton, courseInlineButton, contactInlineButton, workingInlineButton, requestDataInlineButton, whereInlineButton, educationOption } from "../markups/registration.markups";
 import { UserModel } from "../database/Schema.class";
 import { courseOption, whereOption, workingOption, requestOption } from "../markups/registration.markups";
 import { isContactMessage } from "../utils/generaly-utils.functions";
 import { generatePDF } from "../utils/generate-pdf";
+import path from "path";
 
 
 
@@ -12,6 +13,17 @@ function isTextMessage(message: any): message is { text: string } {
     return message && message.text !== undefined;
 }
 
+// function async UpdateData(ctx: IBotContext) {
+//     const user = await UserModel.findOne({ chatId: ctx.chat?.id });
+//     if (user) {
+//         Object.assign(user, { ...ctx.session });
+//         await user.save();
+//     } 
+//     else {
+//         const user = new UserModel({...ctx.session });
+//         await user.save();
+//     }
+// }
 
 
 const registrationWizard = new Scenes.WizardScene<IBotContext>(
@@ -19,7 +31,9 @@ const registrationWizard = new Scenes.WizardScene<IBotContext>(
     
     async (ctx) => {
         ctx.session.subInfo = ctx.session.subInfo || {};
-        await ctx.reply('Привіт, давай знайомитися!');
+        await ctx.replyWithPhoto(
+            { source: path.join(__dirname, '../../public/registration.jpg') },
+            { caption: "Привіт, давай знайомитися!"});
         await ctx.reply('Введіть ваш вік:');
         return ctx.wizard.next();
     },
@@ -33,13 +47,14 @@ const registrationWizard = new Scenes.WizardScene<IBotContext>(
                 await ctx.reply('Будь ласка, введіть коректний вік');
                 return;
             }
-            if ((isNaN(age) || age < 1 || age > 100)) {
+            if ((isNaN(age) || age < 16 || age > 100)) {
                 await ctx.reply('Будь ласка, введіть коректний вік');
                 return;
             } 
-            ctx.session.subInfo.age = age;
+            
+
             await ctx.reply("Поважна цифра😎");
-            await ctx.reply("Де вчишся? Вибери або просто введи", educationInlineButton);
+            await ctx.reply("Де вчишся?", educationInlineButton);
             return ctx.wizard.next();
         } else {
             await ctx.reply('Будь ласка, введіть числове значення для віку.');
@@ -53,6 +68,15 @@ const registrationWizard = new Scenes.WizardScene<IBotContext>(
                 await ctx.reply('Будь ласка, введіть коректне місце навчання');
                 return;
             } 
+            if(educationOption[4] == education) {
+                await ctx.reply('На жаль, в нашому івенті участь можуть брати лише студенти.');
+                return;
+            }
+            if(educationOption[5] == education) {
+                await ctx.reply('Тоді впиши мені де ти вчишся.');
+                return;
+            }
+
             ctx.session.subInfo.education = education;
             await ctx.reply('На якій спеціальності навчаєшся?', Markup.removeKeyboard());
             return ctx.wizard.next();
@@ -81,9 +105,14 @@ const registrationWizard = new Scenes.WizardScene<IBotContext>(
         if (isTextMessage(ctx.message)) {
             const text = ctx.message.text.trim();
             if (text) {
+                if(courseOption[5] == text) {
+                    await ctx.reply('Тоді впиши мені на якому курсі ти зараз.');
+                    return;
+                }
+
                 ctx.session.subInfo.course = text;
                 // await ctx.reply('Ех, молодість...');
-                await ctx.reply(`Звідки дізнався/лась про змагання? Вибери або впиши в чат`, whereInlineButton);
+                await ctx.reply(`Звідки дізнався/лась про змагання?`, whereInlineButton);
                 return ctx.wizard.next();
             } else {
                 await ctx.reply('Будь ласка, виберіть коректний курс.');
@@ -98,6 +127,11 @@ const registrationWizard = new Scenes.WizardScene<IBotContext>(
         if (isTextMessage(ctx.message)) {
             const text = ctx.message.text.trim();
             if (text) {
+                if(whereOption[3] == text) {
+                    await ctx.reply('Тоді впиши мені де ти дізнався/лась про змагання.');
+                    return;
+                }
+
                 ctx.session.subInfo.where = text;
                 await ctx.reply('Дякую, що поділився/лась!');
                 await ctx.reply('Чи працюєш зараз в інженерії?', workingInlineButton);
@@ -134,8 +168,8 @@ const registrationWizard = new Scenes.WizardScene<IBotContext>(
 
             console.log(ctx.from?.username)       
             ctx.session.subInfo.phone = contact.phone_number || '';
-            await ctx.reply(`Дякуємо за ваш контакт! Ось контакти нашого головного організатора: @Shiza1705`, Markup.removeKeyboard());
-            await ctx.reply("А електронну адресу дасиш?");
+            await ctx.reply(`Дякуємо за ваш контакт! Ось контакти нашого головного організатора: @ruslan_yavir`, Markup.removeKeyboard());
+            await ctx.reply("Тепер напиши мені свою електронну пошту.");
             return ctx.wizard.next();
         } else {
             await ctx.reply('Контакт не отримано.');
@@ -153,7 +187,9 @@ const registrationWizard = new Scenes.WizardScene<IBotContext>(
             } else {
                 ctx.session.subInfo.email = email;
                 await ctx.reply('Дякую за таке знайомство!');
-                await ctx.reply(`Залишилося тільки надати згоду на обробку даних`, requestDataInlineButton);
+                await ctx.reply(`Залишилося тільки надати згоду на обробку даних\nОсь посилання на загальні правила івенту:`, requestDataInlineButton);
+                const filePath = path.join(__dirname, '../../public/Правила.pdf');
+                await ctx.replyWithDocument({ source: filePath })
                 return ctx.wizard.next();
             }
         } else {
@@ -164,10 +200,20 @@ const registrationWizard = new Scenes.WizardScene<IBotContext>(
     async (ctx) => {
         if (isTextMessage(ctx.message) && requestOption.includes(ctx.message.text)) { // Assuming the user clicks an inline button for consent
             ctx.session.isRegistered = true;
-            const newUser = new UserModel({...ctx.session });
-            await newUser.save();
-            await ctx.reply("Супер, реєстрація закінчилась!", Markup.removeKeyboard());
+            const user = await UserModel.findOne({ chatId: ctx.chat?.id });
+            if (user) {
+                Object.assign(user, { ...ctx.session });
+                await user.save();
+            } 
+            else {
+                const user = new UserModel({...ctx.session });
+                await user.save();
+            }
             
+            // await ctx.reply("Супер, реєстрація закінчилась!", Markup.removeKeyboard());
+            await ctx.replyWithPhoto(
+                { source: path.join(__dirname, '../../public/start.jpg') },
+                { caption: "Супер, реєстрація закінчилась!"},);
            
             await ctx.scene.enter('after-registration-menu-wizard');
         } else {

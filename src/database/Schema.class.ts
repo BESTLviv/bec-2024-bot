@@ -67,7 +67,9 @@ const teamSchema = new Schema({
 
 const currentStageSchema = new Schema({
     name: String,
-    isTestReady: Boolean
+    isTestReady: Boolean,
+    linkForTest: String,
+    rulesDoc: String
 });
 
 export const UserModel = model('User', UserSchema, "users");

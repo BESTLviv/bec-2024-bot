@@ -3,7 +3,7 @@ import { Markup } from "telegraf";
 export const menuOption = ['Вакансії', 'Більше інформації про BEC', 'Моя команда']
 export const menuKeyboard = Markup.keyboard([
     [  
-        Markup.button.callback(menuOption[0], "menu_vacancies"),
+        // Markup.button.callback(menuOption[0], "menu_vacancies"),
         Markup.button.callback(menuOption[1], "menu_more-info"),
     ],
     [  
@@ -16,15 +16,15 @@ export const menuKeyboard = Markup.keyboard([
 export const infoOption = ['Назад', 'Категорії', 'Дата і місце проведення', 'Правила', "Організатори"]
 export const infoKeyboard = Markup.keyboard([
     [  
-        Markup.button.callback(infoOption[0], "info_back"),
-        Markup.button.callback(infoOption[1], "info_date"),
+        Markup.button.text(infoOption[0]),
+        Markup.button.text(infoOption[1]),
     ],
     [  
-        Markup.button.callback(infoOption[2], "info_categories"),
-        Markup.button.callback(infoOption[3], "info_rules"),
+        Markup.button.text(infoOption[2]),
+        Markup.button.text(infoOption[3]),
     ],
     [
-        Markup.button.callback(infoOption[4], "info_organizers"),
+        Markup.button.text(infoOption[4]),
     ]
 
 ]).resize();
@@ -78,17 +78,15 @@ export const teamProfileboard = Markup.keyboard([
 export const teamCompetitionOption = ["Назад",  "Команді потрібна допомога", "Моє CV",]
 export const teamProfileAfterApprove = Markup.keyboard([
     [  
-        Markup.button.callback(teamCompetitionOption[0], "team-profile_back"),
+      Markup.button.text(teamCompetitionOption[0]), // Створюємо звичайну кнопку
     ],
     [
-        Markup.button.callback(teamCompetitionOption[1], "team-profile_help"),
+      Markup.button.text(teamCompetitionOption[1]),
     ],
     [
-        Markup.button.callback(teamCompetitionOption[2], "team-profile_add-cv"),
-    ],
-
-
-]).resize();
+      Markup.button.text(teamCompetitionOption[2]),
+    ]
+  ]).resize(); 
 
 export const resumeOption = [ "Надіслати готове CV", "Створити CV", "Подивитися завантажене CV", "Назад"]
 export const resumeKeyboard = Markup.keyboard([

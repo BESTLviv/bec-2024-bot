@@ -22,6 +22,7 @@ export class Bot {
     stage: Scenes.Stage<IBotContext>;
     telegram: any;
     bot: Telegraf<IBotContext>;
+    startCommand: any;
 
     constructor(private readonly configService: IConfigService) {
        this.bot = new Telegraf<IBotContext>(this.configService.get("TOKEN"))
@@ -33,12 +34,10 @@ export class Bot {
     }
 
     init() {
-        const startCommand = new StartCommand(this.bot);
-        startCommand.handle();
+        this.startCommand = new StartCommand(this.bot);
+        this.startCommand.handle();
         this.bot.launch();
     }
-
-    
 }
 
 const app = express();
@@ -49,3 +48,4 @@ app.listen(port, () => {
 
 const bot = new Bot(new ConfigService());
 bot.init()
+

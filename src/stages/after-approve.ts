@@ -6,6 +6,8 @@ import { menuKeyboardAfterApprove, menuOptionAfterApprove } from "../markups/aft
 import { UpdateStage } from "../utils/update-stage";
 import { GetCurrentStage } from "../utils/get-current-stage";
 import { UserModel, teamModel } from "../database/Schema.class";
+import path from "path";
+import { TimeCheck } from "../utils/timeCheck";
 
 const afterApproveMenuWizard = new Scenes.WizardScene<IBotContext>(
     'after-approve-menu-wizard',
@@ -51,9 +53,16 @@ afterApproveMenuWizard.hears(menuOptionAfterApprove[1], async (ctx) => {
      return ctx.scene.enter('more-info-menu-wizard');   
 })
 afterApproveMenuWizard.hears(menuOptionAfterApprove[2], async (ctx) => {
-    await ctx.reply('Запрошуємо до спілкування з іншими учасниками 😋',  Markup.inlineKeyboard([
-        Markup.button.url('Тик', 'https://t.me/+r1HLUVqycngxYzZi')
-    ]));   
+    try{
+        await TimeCheck(ctx)
+        await ctx.reply('Запрошуємо до спілкування з іншими учасниками 😋',  Markup.inlineKeyboard([
+            Markup.button.url('Тик', 'https://t.me/+r1HLUVqycngxYzZi')
+        ]));   
+    }
+    catch(error) {
+        return;
+    }
+    
 })
 // afterApproveMenuWizard.hears(menuOptionAfterApprove[3], async (ctx) => {
 //     await ctx.reply('Ось посилання на загальну інформацію для учасників, обов\'язково прочитати!',  Markup.inlineKeyboard([

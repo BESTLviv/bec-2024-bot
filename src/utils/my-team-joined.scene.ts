@@ -1,36 +1,46 @@
 import { IBotContext } from "../context/context.interface";
-import { Scenes } from "telegraf";
+import { Markup, Scenes } from "telegraf";
 import { UserModel, currentStageModel, teamModel } from "../database/Schema.class";
 import { menuKeyboard, resumeKeyboard, teamCompetitionOption, teamProfileAfterApprove, teamProfileOption, teamProfileboard } from "../markups/after-registration.class";
 import { workingInlineButton, workingOption } from "../markups/registration.markups";
 import * as path from 'path';
 import { getTeamInfo } from "./get-team-info";
 import { isTextMessage, isDocumentMessage, getSceneAndKeyboard } from "./generaly-utils.functions";
+import { TimeCheck } from "./timeCheck";
 
-let currentSceneKeyboard: any;
-let currentStage: any;
+// let currentSceneKeyboard: any;
+// let currentStage: any;
 
 const myTeamJoinedMenuWizard = new Scenes.WizardScene<IBotContext>(
     'my-team-joined-menu-wizard',
     async (ctx) => {
 
         const { scene, keyboard } = await getSceneAndKeyboard(ctx);
-        currentStage = scene;
-        currentSceneKeyboard = keyboard;
+        ctx.session.currentStage = scene;
+        ctx.session.currentSceneKeyboard = keyboard;
        
         if(ctx.chat) {
             const user = await UserModel.findOne({ chatId: ctx.chat?.id });
             const team = await teamModel.findById(user?.team);
             const teamInfo = await getTeamInfo(team);
-            console.log(currentSceneKeyboard)
-            if(currentStage == "competition-menu-wizard") {
-                await ctx.reply(teamInfo, teamProfileAfterApprove);
+
+            if (ctx.session.currentStage == "after-approve-menu-wizard"){
+                await ctx.replyWithPhoto(
+                    { source: path.join(__dirname, '../../public/team.jpg')},
+                    {
+                        caption: teamInfo,
+                        reply_markup: teamProfileAfterApprove.reply_markup,
+                    }
+                );
             }
-            else if (currentStage == "after-approve-menu-wizard"){
-                await ctx.reply(teamInfo, teamProfileAfterApprove);
-            }
-            else if (currentStage == "after-registration-menu-wizard"){
-                await ctx.reply(teamInfo, teamProfileboard);
+            else if (ctx.session.currentStage == "after-registration-menu-wizard"){
+                await ctx.replyWithPhoto(
+                    { source: path.join(__dirname, '../../public/team.jpg')},
+                    {
+                        caption: teamInfo,
+                        reply_markup: teamProfileboard.reply_markup,
+                    }
+                );
             }
           
 
@@ -116,63 +126,90 @@ const myTeamJoinedMenuWizard = new Scenes.WizardScene<IBotContext>(
 );
 
 myTeamJoinedMenuWizard.hears(teamProfileOption[0], async (ctx) => {
-        return ctx.scene.enter(currentStage, currentSceneKeyboard);  
+        return ctx.scene.enter(ctx.session.currentStage, ctx.session.currentSceneKeyboard);  
 })
 
     myTeamJoinedMenuWizard.hears(teamProfileOption[1], async (ctx) => {
-        if(currentStage !== "after-approve-menu-wizard") {
-            const stage = await currentStageModel.findOne({})
-
-            if(stage?.isTestReady) {
-                const user = await UserModel.findOne({ chatId: ctx.chat.id });
-                const team = await teamModel.findById(user?.team);
-                if(team?.category === "Team Design") {
-                    await ctx.reply("Введи посилання на ваш проєкт в Tinkercad'i");
+        try{
+            await TimeCheck(ctx)
+            if(ctx.session.currentStage !== "after-approve-menu-wizard") {
+                const stage = await currentStageModel.findOne({})
+    
+                if(stage?.isTestReady) {
+                    const user = await UserModel.findOne({ chatId: ctx.chat.id });
+                    const team = await teamModel.findById(user?.team);
+                    if(team?.category === "Team Design") {
+                        await ctx.reply("Введи посилання на ваш проєкт в Tinkercad'i");
+                    }
+                    else if (team?.category === "Case Study") {
+                        await ctx.reply("Завантажте у чат pdf-файл з вашим завданням");
+                    }
+                    ctx.wizard.selectStep(1);
                 }
-                else if (team?.category === "Case Study") {
-                    await ctx.reply("Завантажте у чат pdf-файл з вашим завданням");
+                else {
+                    await ctx.reply("Наразі тестового завдання ще нема, очікуйте інформацію в нашому телеграм боті або в інстаграмі.");  
                 }
-                ctx.wizard.selectStep(1);
+            
             }
-            else {
-                await ctx.reply("Наразі тестового завдання ще нема, очікуйте інформацію про завдання");  
-            }
-        
+        } catch(error) {
+            return;
         }
+        
     })
     myTeamJoinedMenuWizard.hears(teamProfileOption[2], async (ctx) => {
-        if(currentStage !== "after-approve-menu-wizard") {
-            await ctx.reply("Введіть технології якими володіє ваша команда");
-            ctx.wizard.selectStep(2);
+       
+        try{
+            await TimeCheck(ctx)
+            if(ctx.session.currentStage !== "after-approve-menu-wizard") {
+                await ctx.reply("Введіть технології якими володіє ваша команда");
+                ctx.wizard.selectStep(2);
+            }
         }
-        
+        catch(error) {
+            return;
+        }
     })
     myTeamJoinedMenuWizard.hears(teamProfileOption[4], async (ctx) => {
-        if(currentStage !== "after-approve-menu-wizard") {
-            const stage = await currentStageModel.findOne({})
-
-            if(stage?.isTestReady) {
-                // const filePath = path.resolve(__dirname, "./public/file_0.pdf");
-                if(ctx.chat) {
-                    await ctx.reply("https://medium.com/maddevs-io/kak-razvernut-proekt-na-heroku-6f502e66560a");
-                    // await ctx.telegram.sendDocument(ctx.chat.id, { source: filePath });
-                }    
-            }
-            else {
-                await ctx.reply("Тестового завдання ще нема, очікуйте в майбутньому");
-            }
-            
-           
-            ctx.message.text = "";
-           return ctx.scene.enter('my-team-joined-menu-wizard'); 
-        }  
+        try{
+            await TimeCheck(ctx)
+            if(ctx.session.currentStage !== "after-approve-menu-wizard") {
+                const stage = await currentStageModel.findOne({})
+    
+                if(stage?.isTestReady) {
+                    if(ctx.chat && stage.linkForTest) {
+                        await ctx.replyWithPhoto(
+                            { source: path.join(__dirname, '../../public/test.jpg')},
+                            { caption: stage.linkForTest}
+                        );
+                    }    
+                }
+                else {
+                    await ctx.replyWithPhoto(
+                        { source: path.join(__dirname, '../../public/notest.jpg')},
+                        {caption: "Тестового завдання ще нема, очікуйте в майбутньому"}
+                    );
+                }
+                ctx.message.text = "";
+            }  
+        }
+        catch(error) {
+            return;
+        }
+       
     })
     
     myTeamJoinedMenuWizard.hears(teamProfileOption[5], async (ctx) => {
-        if(currentStage !== "after-approve-menu-wizard") {
-            await ctx.reply("Чи точно ви хочете покинути команду?", workingInlineButton);
-            ctx.wizard.selectStep(4);   
+        try{
+            await TimeCheck(ctx)
+            if(ctx.session.currentStage !== "after-approve-menu-wizard") {
+                await ctx.reply("Чи точно ви хочете покинути команду?", workingInlineButton);
+                ctx.wizard.selectStep(4);   
+            }
         }
+        catch(error) {
+            return;
+        }
+        
     })
 
     // myTeamJoinedMenuWizard.hears(teamCompetitionOption[2], async (ctx) => {
@@ -181,30 +218,45 @@ myTeamJoinedMenuWizard.hears(teamProfileOption[0], async (ctx) => {
     //     }
     // })
     myTeamJoinedMenuWizard.hears(teamCompetitionOption[1], async (ctx) => {
-        if(currentStage == "after-approve-menu-wizard") {
-            let contacts = "Ось вам контакти організаторів:\n"
-            contacts += "Руслан Явір - @Shiza1705\n"
-            contacts += "Братюк Владислав - @bratiuk\n"
-            contacts += "Кичма Лілія - @lilaaaaaaaaa\n"
-
-            await ctx.reply(contacts);
+        try{
+            await TimeCheck(ctx)
+            if(ctx.session.currentStage == "after-approve-menu-wizard") {
+                let contacts = "Ось вам контакти організаторів:\n"
+                contacts += "Руслан Явір - @ruslan_yavir\n"
+                contacts += "Братюк Владислав - @bratiuk\n"
+                contacts += "Кичма Лілія - @lilaaaaaaaaa\n"
+    
+                await ctx.reply(contacts);
+            }
         }
+        catch(error) {
+            return;
+        }
+        
     })
 
 myTeamJoinedMenuWizard.hears(teamProfileOption[3], async (ctx) => {
-    await ctx.reply("Ви можете: надіслати своє готове резюме у вигляді PDF-файлу; покроково створити своє резюме, яке буде мати дизайн; подивитися своє завантажене CV.", resumeKeyboard)
-    const filePath = path.resolve(__dirname, '../../public/resume_test.pdf');
+    try{
+        await TimeCheck(ctx)
+        await ctx.reply("Ви можете: надіслати своє готове резюме у вигляді PDF-файлу; покроково створити своє резюме, яке буде мати дизайн; подивитися своє завантажене CV.", resumeKeyboard)
+        const filePath = path.resolve(__dirname, '../../public/resume_test.pdf');
+        
+        try {
+            // Відправляємо документ з правильним шляхом
+            await ctx.telegram.sendDocument(ctx.chat?.id, { source: filePath }, {
+            caption: 'Ось приклад резюме, яке ви можете зробити за допомоги кнопки "Створити CV".'
+            });
+        } catch (error) {
+            console.error('Помилка під час відправки файлу:', error);
+            await ctx.reply('Сталася помилка під час відправки файлу.');
+        }
+            await ctx.scene.enter('create-resume-wizard');
+    }
+    catch(error) {
+        return;
+    }
+    
   
-  try {
-    // Відправляємо документ з правильним шляхом
-    await ctx.telegram.sendDocument(ctx.chat?.id, { source: filePath }, {
-      caption: 'Ось приклад резюме, яке ви можете зробити за допомоги кнопки "Створити CV".'
-    });
-  } catch (error) {
-    console.error('Помилка під час відправки файлу:', error);
-    await ctx.reply('Сталася помилка під час відправки файлу.');
-  }
-    await ctx.scene.enter('create-resume-wizard');
     // ctx.wizard.selectStep(3);   
 })
 

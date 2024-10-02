@@ -6,54 +6,13 @@ import { UserModel } from "../database/Schema.class";
 import { generatePDF } from "./generate-pdf";
 import { downloadFile } from "./download-cv";
 import * as fs from 'fs';
-// Інтерфейс для резюме
-interface IResumeData {
-  personalInfo: {
-    photoUrl: string;
-    fullName: string;
-    location: string;
-    phone: string;
-    email: string;
-    birthDate: string;
-    maritalStatus: string;
-    linkedIn: string;
-  };
-  qualification: string;
-  workExperience: Array<{
-    position: string;
-    company: string;
-    location: string;
-    dateRange: string;
-    responsibilities: string[];
-  }>;
-  education: Array<{
-    degree: string;
-    institution: string;
-    dateRange: string;
-  }>;
-  skills: string[];
-}
+import { TimeCheck } from "./timeCheck";
 
 // Об'єкт резюме для заповнення
-let resume: IResumeData = {
-  personalInfo: {
-    photoUrl: '',
-    fullName: '',
-    location: '',
-    phone: '',
-    email: '',
-    birthDate: '',
-    maritalStatus: '',
-    linkedIn: '',
-  },
-  qualification: '',
-  workExperience: [],
-  education: [],
-  skills: [],
-};
 
-let currentSceneKeyboard: any;
-let currentStage: string;
+
+// let currentSceneKeyboard: any;
+// let currentStage: string;
 
 // Сцена заповнення резюме
 const createResumeWizard = new Scenes.WizardScene<IBotContext>(
@@ -61,8 +20,8 @@ const createResumeWizard = new Scenes.WizardScene<IBotContext>(
 
   async (ctx) => {
     const { keyboard, scene } = await getSceneAndKeyboard(ctx);
-    currentStage = scene;
-    currentSceneKeyboard = keyboard;
+    ctx.session.currentStage = scene;
+    ctx.session.currentSceneKeyboard = keyboard;
     await ctx.reply('Вибери одну з кнопок:');
   },
   async (ctx) => {
@@ -89,8 +48,25 @@ const createResumeWizard = new Scenes.WizardScene<IBotContext>(
     },
   // Крок 2: Отримуємо повне ім'я та запитуємо місцезнаходження
   async (ctx) => {
+    ctx.session.resume = {
+      personalInfo: {
+        photoUrl: '',
+        fullName: '',
+        location: '',
+        phone: '',
+        email: '',
+        birthDate: '',
+        maritalStatus: '',
+        linkedIn: '',
+      },
+      qualification: '',
+      workExperience: [],
+      education: [],
+      skills: [],
+    };
+
     if (isTextMessage(ctx.message)) {
-      resume.personalInfo.fullName = ctx.message.text.trim();
+      ctx.session.resume.personalInfo.fullName = ctx.message.text.trim();
       await ctx.reply('Введіть ваше місцезнаходження:');
       return ctx.wizard.next();
     }
@@ -100,7 +76,7 @@ const createResumeWizard = new Scenes.WizardScene<IBotContext>(
   // Крок 3: Отримуємо місцезнаходження та запитуємо телефон
   async (ctx) => {
     if (isTextMessage(ctx.message)) {
-      resume.personalInfo.location = ctx.message.text.trim();
+      ctx.session.resume.personalInfo.location = ctx.message.text.trim();
       await ctx.reply('Введіть ваш номер телефону:');
       return ctx.wizard.next();
     }
@@ -110,7 +86,7 @@ const createResumeWizard = new Scenes.WizardScene<IBotContext>(
   // Крок 4: Отримуємо телефон та запитуємо email
   async (ctx) => {
     if (isTextMessage(ctx.message)) {
-      resume.personalInfo.phone = ctx.message.text.trim();
+      ctx.session.resume.personalInfo.phone = ctx.message.text.trim();
       await ctx.reply('Введіть ваш email:');
       return ctx.wizard.next();
     }
@@ -120,7 +96,7 @@ const createResumeWizard = new Scenes.WizardScene<IBotContext>(
   // Крок 5: Отримуємо email та запитуємо дату народження
   async (ctx) => {
     if (isTextMessage(ctx.message)) {
-      resume.personalInfo.email = ctx.message.text.trim();
+      ctx.session.resume.personalInfo.email = ctx.message.text.trim();
       await ctx.reply('Введіть вашу дату народження (дд-мм-рррр):');
       return ctx.wizard.next();
     }
@@ -130,7 +106,7 @@ const createResumeWizard = new Scenes.WizardScene<IBotContext>(
   // Крок 6: Отримуємо дату народження та запитуємо сімейний стан
   async (ctx) => {
     if (isTextMessage(ctx.message)) {
-      resume.personalInfo.birthDate = ctx.message.text.trim();
+      ctx.session.resume.personalInfo.birthDate = ctx.message.text.trim();
       await ctx.reply('Введіть ваш профіль LinkedIn(якщо нема то ставте \'-\'):');
       return ctx.wizard.next();
     }
@@ -140,7 +116,7 @@ const createResumeWizard = new Scenes.WizardScene<IBotContext>(
   // Крок 8: Отримуємо LinkedIn та запитуємо кваліфікацію
   async (ctx) => {
     if (isTextMessage(ctx.message)) {
-      resume.personalInfo.linkedIn = ctx.message.text.trim();
+      ctx.session.resume.personalInfo.linkedIn = ctx.message.text.trim();
       await ctx.reply('Напишіть коротко про вас, яку спеціальність бажаєте:');
       return ctx.wizard.next();
     }
@@ -150,7 +126,7 @@ const createResumeWizard = new Scenes.WizardScene<IBotContext>(
 // Крок 9: Отримуємо кваліфікацію та запитуємо досвід роботи
 async (ctx) => {
     if (isTextMessage(ctx.message)) {
-      resume.qualification = ctx.message.text.trim();
+      ctx.session.resume.qualification = ctx.message.text.trim();
       await ctx.reply('Введіть досвід роботи через кому (позиція, компанія, локація, дати, обов\'язки на цій посаді) або напишіть "стоп" для завершення:');
       return ctx.wizard.next();
     }
@@ -183,7 +159,7 @@ async (ctx) => {
       }
   
       // Додаємо запис про досвід роботи в резюме
-      resume.workExperience.push({
+      ctx.session.resume.workExperience.push({
         position: workData[0].trim(),
         company: workData[1].trim(),
         location: workData[2].trim(),
@@ -224,7 +200,7 @@ async (ctx) => {
       }
   
       // Додаємо запис про освіту в резюме
-      resume.education.push({
+      ctx.session.resume.education.push({
         degree: educationData[0].trim(),
         institution: educationData[1].trim(),
         dateRange: educationData[2].trim(),
@@ -249,7 +225,7 @@ async (ctx) => {
       }
   
       // Розділяємо навички і додаємо їх у резюме
-      resume.skills = message.split(',').map((skill) => skill.trim());
+      ctx.session.resume.skills = message.split(',').map((skill) => skill.trim());
   
       await ctx.reply('І останнє, надішліть своє фото');
 
@@ -271,13 +247,13 @@ async (ctx) => {
         await downloadFile(fileLink.href, photoFilePath);
   
         // Зберігаємо посилання на фото у резюме
-        resume.personalInfo.photoUrl = fileLink.href;
+        ctx.session.resume.personalInfo.photoUrl = fileLink.href;
   
         // Повідомляємо користувачу про завершення
         await ctx.reply("Створення резюме завершено! Тепер оберіть кнопку надіслати готове резюме і відправте цей pdf-файл");
   
         // Генеруємо PDF-файл
-        const pdfFilePath = await generatePDF(ctx, resume);
+        const pdfFilePath = await generatePDF(ctx, ctx.session.resume);
   
         // Відправляємо PDF-файл у чат
         await ctx.replyWithDocument({ source: pdfFilePath, filename: `${ctx.from?.id}_resume.pdf` });
@@ -316,15 +292,31 @@ async (ctx) => {
 );
 
 createResumeWizard.hears(resumeOption[0], async (ctx) => {
-    await ctx.reply('Надішліть своє CV у вигляді PDF-файлу');
-    ctx.wizard.selectStep(1);   
+    try{
+      await TimeCheck(ctx)
+      await ctx.reply('Надішліть своє CV у вигляді PDF-файлу');
+      ctx.wizard.selectStep(1);   
+    }
+    catch(error) {
+        return;
+    }
+   
 })
 createResumeWizard.hears(resumeOption[1], async (ctx) => {
+  try{
+    await TimeCheck(ctx)
     await ctx.reply('Введіть своє ПІБ');
-    ctx.wizard.selectStep(2);   
+    ctx.wizard.selectStep(2);  
+  }
+  catch(error) {
+      return;
+  }
+     
 })
 createResumeWizard.hears(resumeOption[2], async (ctx) => {
-  const user = await UserModel.findOne({ chatId: ctx.chat?.id });
+  try{
+    await TimeCheck(ctx)
+    const user = await UserModel.findOne({ chatId: ctx.chat?.id });
 
   if (user && user.cv) {
     const fileId = user.cv; // file_id з Telegram, а не URL
@@ -357,9 +349,14 @@ createResumeWizard.hears(resumeOption[2], async (ctx) => {
     await ctx.reply('У вас не завантажений файл з резюме');
     return;
   }  
+  }
+  catch(error) {
+      return;
+  }
+  
 });
 createResumeWizard.hears(resumeOption[3], async (ctx) => {
-  return ctx.scene.enter(currentStage, currentSceneKeyboard);  
+  return ctx.scene.enter(ctx.session.currentStage, ctx.session.currentSceneKeyboard);  
 })
 // Експорт сцени
 export default createResumeWizard;

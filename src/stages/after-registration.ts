@@ -6,6 +6,9 @@ import vacancies from '../data/vacancies.json';
 import { ConfigService } from "../config/config.service";
 import { GetCurrentStage } from "../utils/get-current-stage";
 import { UpdateStage } from "../utils/update-stage";
+import path from "path";
+import { TimeCheck } from "../utils/timeCheck";
+import { Bot } from "../app";
 
 
 const afterRegistrationMenuWizard = new Scenes.WizardScene<IBotContext>(
@@ -48,7 +51,6 @@ const adminSecret = new ConfigService().get("ADMIN_WORD");
 afterRegistrationMenuWizard.hears(adminSecret, async (ctx) => {
     return ctx.scene.enter('admin-panel-wizard');
 });
-
 
 
 

@@ -4,12 +4,12 @@ import { UserModel, teamModel } from "../database/Schema.class";
 import { categoriesboard, categoriesOption, backOption, backboard } from "../markups/after-registration.class";
 import { isTextMessage } from "./generaly-utils.functions";
 
-const team = {
-    name: "",
-    password: "",
-    categoty: "",
-    technologyList: "",
-}
+// const team = {
+//     name: "",
+//     password: "",
+//     categoty: "",
+//     technologyList: "",
+// }
 
 const createTeamMenuWizard = new Scenes.WizardScene<IBotContext>(
     'create-team-wizard',
@@ -37,7 +37,7 @@ const createTeamMenuWizard = new Scenes.WizardScene<IBotContext>(
                 return ctx.wizard.selectStep(1);
             }
 
-            team.name = name;
+            ctx.session.teamName = name;
             await ctx.reply('Звучить потужно!');
             await ctx.reply("Тепер вибери категорію, за якою буде приймати участь ваша команда", categoriesboard); 
             return ctx.wizard.next();  
@@ -52,7 +52,7 @@ const createTeamMenuWizard = new Scenes.WizardScene<IBotContext>(
                 return  ctx.wizard.selectStep(2);
             }
 
-            team.categoty = categoty;
+            ctx.session.teamCategoty = categoty;
             await ctx.reply("Тепер напиши список технологій, якими володіє ваша команда",  Markup.removeKeyboard()); 
             return ctx.wizard.next();  
         }
@@ -61,7 +61,7 @@ const createTeamMenuWizard = new Scenes.WizardScene<IBotContext>(
         if (isTextMessage(ctx.message)) {
             const listTechnology = ctx.message.text.trim();
             if(ctx.chat) {
-                team.technologyList = listTechnology;
+                ctx.session.teamTechnologyList = listTechnology;
                 await ctx.reply("Тепер придумай пароль для команди",  Markup.removeKeyboard()); 
                 return ctx.wizard.next();   
             }
@@ -73,9 +73,10 @@ const createTeamMenuWizard = new Scenes.WizardScene<IBotContext>(
 
             if (password.length < 8 || password.length > 30 || !password) {
                 await ctx.reply('Пароль повинен містити від 8 до 30 символів. Будь ласка, введіть коректний пароль.');
-                return  ctx.wizard.selectStep(3);
+                // return  ctx.wizard.selectStep(3);
             }
-            team.password = password;
+            else {
+                ctx.session.teamPassword = password;
             let user;
             if(ctx.chat) {
                 user = await UserModel.findOne({ chatId: ctx.chat.id });
@@ -86,11 +87,11 @@ const createTeamMenuWizard = new Scenes.WizardScene<IBotContext>(
             }            
             if (user) {
                 const teamDB = new teamModel({
-                    name: team.name,
-                    password: team.password,
-                    category: team.categoty,
+                    name: ctx.session.teamName,
+                    password: ctx.session.teamPassword,
+                    category: ctx.session.teamCategoty,
                     members: user?._id,
-                    technologyList: team.technologyList,
+                    technologyList: ctx.session.teamTechnologyList,
                 });
                 user.team = teamDB._id;
                 await teamDB.save();
@@ -104,6 +105,8 @@ const createTeamMenuWizard = new Scenes.WizardScene<IBotContext>(
 
             await ctx.reply('Створення команди завершено!');
             return ctx.scene.enter("after-registration-menu-wizard");  
+            }
+            
         }
         else {
             await ctx.reply("Придумай пароль для команди")

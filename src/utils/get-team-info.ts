@@ -28,10 +28,17 @@ async function getMembersInfo(team: any): Promise<string> {
     let membersInfo = "";
     for (const member of team.members) {
         const user = await UserModel.findById( member );
-        if (user?.userName) {
-            membersInfo += "@" + user.userName;
-            membersInfo += ": Наявність CV - " + (user.cv ? "✅" : "❌") + "\n";
+        if(user) {
+            if (user.userName) {
+                membersInfo += "@" + user.userName;
+                membersInfo += ": Наявність CV - " + (user.cv ? "✅" : "❌") + "\n";
+            }
+            else {
+                membersInfo += "Учасник без імені";
+                membersInfo += ": Наявність CV - " + (user.cv ? "✅" : "❌") + "\n";
+            }
         }
+       
     }
     return membersInfo;
 }

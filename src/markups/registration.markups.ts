@@ -1,6 +1,6 @@
 import { Markup } from 'telegraf';
 
-export const educationOption = ["НУЛП", "УКУ", "ЛНУ",  "КПІ", "Ще в школі", "Вже закінчив(-ла)"]
+export const educationOption = ["НУЛП", "УКУ", "ЛНУ",  "КПІ", "Ще в школі", "Інше"]
 export const educationInlineButton = Markup.keyboard([
     [
         Markup.button.callback(educationOption[0], "education_nulp"),
@@ -17,7 +17,7 @@ export const educationInlineButton = Markup.keyboard([
 ]).resize().oneTime();
 
 
-export const courseOption = ["Перший", "Другий", "Третій", "Четвертий", "На магістратурі", "Нічого з переліченого"]
+export const courseOption = ["Перший", "Другий", "Третій", "Четвертий", "На магістратурі", "Інше"]
 export const courseInlineButton = Markup.keyboard([
     [
         Markup.button.callback(courseOption[0], "course_first"),
