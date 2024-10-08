@@ -8,21 +8,27 @@ import { TimeCheck } from "./timeCheck";
 const myTeamMenuWizard = new Scenes.WizardScene<IBotContext>(
     'my-team-menu-wizard',
     async (ctx) => {
-        const user = await UserModel.findOne({ chatId: ctx.chat?.id });
+        try{
+            const user = await UserModel.findOne({ chatId: ctx.chat?.id });
        
-        if (!user?.team) {
-            await ctx.replyWithPhoto(
-                { source: path.join(__dirname, '../../public/team.jpg')},
-                {
-                    caption: "У вас нема команди, створіть свою команду або доєднайтеся до іншої команди.",
-                    reply_markup: takeKeyboard.reply_markup,
-                }
-            );
-            
+            if (!user?.team) {
+                await ctx.replyWithPhoto(
+                    { source: path.join(__dirname, '../../public/team.jpg')},
+                    {
+                        caption: "У вас нема команди, створіть свою команду або доєднайтеся до іншої команди.",
+                        reply_markup: takeKeyboard.reply_markup,
+                    }
+                );
+                
+            }
+            else {
+                await ctx.scene.enter("my-team-joined-menu-wizard");  
+            }
         }
-        else {
-            await ctx.scene.enter("my-team-joined-menu-wizard");  
+        catch (error) {
+            return;
         }
+        
     }
 );
 

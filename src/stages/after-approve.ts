@@ -12,20 +12,25 @@ import { TimeCheck } from "../utils/timeCheck";
 const afterApproveMenuWizard = new Scenes.WizardScene<IBotContext>(
     'after-approve-menu-wizard',
     async (ctx) => {
-       
-        UpdateStage(ctx, "after-approve-menu-wizard");
-        if(ctx.chat) {  
-            const user = await UserModel.findOne({ chatId: ctx.chat?.id });
-            const team = await teamModel.findById(user?.team)
-            if( team && team.isApprove) {
-                if('after-approve-menu-wizard' == await GetCurrentStage()) {
-                    await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboardAfterApprove);
+        try{
+            UpdateStage(ctx, "after-approve-menu-wizard");
+            if(ctx.chat) {  
+                const user = await UserModel.findOne({ chatId: ctx.chat?.id });
+                const team = await teamModel.findById(user?.team)
+                if( team && team.isApprove) {
+                    if('after-approve-menu-wizard' == await GetCurrentStage()) {
+                        await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboardAfterApprove);
+                    }
+                }
+                else {
+                    await ctx.reply("На жаль, ви не перейшли на наступний етап", );
                 }
             }
-            else {
-                await ctx.reply("На жаль, ви не перейшли на наступний етап", );
-            }
         }
+        catch (error) {
+            return;
+        }
+        
     },
 
 );

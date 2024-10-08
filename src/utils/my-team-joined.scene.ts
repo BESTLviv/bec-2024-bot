@@ -14,8 +14,8 @@ import { TimeCheck } from "./timeCheck";
 const myTeamJoinedMenuWizard = new Scenes.WizardScene<IBotContext>(
     'my-team-joined-menu-wizard',
     async (ctx) => {
-
-        const { scene, keyboard } = await getSceneAndKeyboard(ctx);
+        try{
+            const { scene, keyboard } = await getSceneAndKeyboard(ctx);
         ctx.session.currentStage = scene;
         ctx.session.currentSceneKeyboard = keyboard;
        
@@ -45,81 +45,105 @@ const myTeamJoinedMenuWizard = new Scenes.WizardScene<IBotContext>(
           
 
         }    
-    },
-    async (ctx) => {
-        if (ctx.message) {
-            let testTask;
-            const user = await UserModel.findOne({ chatId: ctx.chat?.id });
-            const team = await teamModel.findById(user?.team);
-            
-            // Перевірка, чи є повідомлення файлом (наприклад, PDF)
-            if (isDocumentMessage(ctx.message) && team?.category ===  "Case Study") {
-                const fileId = ctx.message.document.file_id;
-                const fileLink = await ctx.telegram.getFileLink(fileId);
-                testTask = fileLink.href; // Зберігаємо посилання на файл як testTask
-            }
-            else if(isTextMessage(ctx.message) && team?.category === "Team Design") {
-                testTask = ctx.message.text.trim();
-            }
-            else {
-                await ctx.reply("Ви відправили некоректний формат, спробуйте ще раз");
-                return ctx.wizard.selectStep(1); 
-            }
-
-    
-            if (team) {
-                team.testTask = testTask; 
-                await team.save();
-            } else {
-                await ctx.reply("Виникла помилка");
-            }
-            console.log("fsfd")
-            return ctx.scene.enter('my-team-joined-menu-wizard');  
         }
-    },
-    async (ctx) => {
-        if (isTextMessage(ctx.message)) {
-            const listTechnology = ctx.message.text.trim();
-            if(ctx.chat) {
-                const user = await UserModel.findOne({ chatId: ctx.chat.id });
-                const team = await teamModel.findById(user?.team);
-                if (team) {
-                    team.technologyList = listTechnology;
-                    await team.save();  // Збереження змін в базі даних
-                } else {
-                    await ctx.reply("Виникла помилка");
-                }
-                return ctx.scene.enter('my-team-joined-menu-wizard');  
-            }
+        catch (error) {
+            return;
         }
-    },
-    async (ctx) => {
         
     },
     async (ctx) => {
-        if (isTextMessage(ctx.message)) {
-            const option = ctx.message.text.trim();
-            if(option === workingOption[1]) {
-                return ctx.scene.enter('my-team-joined-menu-wizard');  
-            }
-            else if(option === workingOption[0]) {
+        try{
+            if (ctx.message) {
+                let testTask;
                 const user = await UserModel.findOne({ chatId: ctx.chat?.id });
-                if (user) {
-                    await teamModel.updateOne(
-                        { _id: user.team }, // фільтр для вибору команди
-                        { $pull: { members: user._id } } // видаляємо користувача з масиву members
-                    );
-                    user.team = null;
-                    user.save();
-                    await ctx.reply("Ви успішно покинули команду");
-                    return ctx.scene.enter('my-team-menu-wizard'); 
+                const team = await teamModel.findById(user?.team);
+                
+                // Перевірка, чи є повідомлення файлом (наприклад, PDF)
+                if (isDocumentMessage(ctx.message) && team?.category ===  "Case Study") {
+                    const fileId = ctx.message.document.file_id;
+                    const fileLink = await ctx.telegram.getFileLink(fileId);
+                    testTask = fileLink.href; // Зберігаємо посилання на файл як testTask
+                }
+                else if(isTextMessage(ctx.message) && team?.category === "Team Design") {
+                    testTask = ctx.message.text.trim();
                 }
                 else {
+                    await ctx.reply("Ви відправили некоректний формат, спробуйте ще раз");
+                    return ctx.wizard.selectStep(1); 
+                }
+    
+        
+                if (team) {
+                    team.testTask = testTask; 
+                    await team.save();
+                } else {
+                    await ctx.reply("Виникла помилка");
+                }
+                console.log("fsfd")
+                return ctx.scene.enter('my-team-joined-menu-wizard');  
+            }
+        }
+        catch (error) {
+            return;
+        }
+        
+    },
+    async (ctx) => {
+        try{
+            if (isTextMessage(ctx.message)) {
+                const listTechnology = ctx.message.text.trim();
+                if(ctx.chat) {
+                    const user = await UserModel.findOne({ chatId: ctx.chat.id });
+                    const team = await teamModel.findById(user?.team);
+                    if (team) {
+                        team.technologyList = listTechnology;
+                        await team.save();  // Збереження змін в базі даних
+                    } else {
+                        await ctx.reply("Виникла помилка");
+                    }
                     return ctx.scene.enter('my-team-joined-menu-wizard');  
                 }
             }
-           
         }
+        catch (error) {
+            return;
+        }
+        
+    },
+    async (ctx) => {
+        
+        
+    },
+    async (ctx) => {
+        try{
+            if (isTextMessage(ctx.message)) {
+                const option = ctx.message.text.trim();
+                if(option === workingOption[1]) {
+                    return ctx.scene.enter('my-team-joined-menu-wizard');  
+                }
+                else if(option === workingOption[0]) {
+                    const user = await UserModel.findOne({ chatId: ctx.chat?.id });
+                    if (user) {
+                        await teamModel.updateOne(
+                            { _id: user.team }, // фільтр для вибору команди
+                            { $pull: { members: user._id } } // видаляємо користувача з масиву members
+                        );
+                        user.team = null;
+                        user.save();
+                        await ctx.reply("Ви успішно покинули команду");
+                        return ctx.scene.enter('my-team-menu-wizard'); 
+                    }
+                    else {
+                        return ctx.scene.enter('my-team-joined-menu-wizard');  
+                    }
+                }
+               
+            }
+        }
+        catch (error) {
+            return;
+        }
+        
     }
         
 

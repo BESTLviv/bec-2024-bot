@@ -13,17 +13,23 @@ import { TimeCheck } from "./timeCheck";
 const moreInfoMenuWizard = new Scenes.WizardScene<IBotContext>(
     'more-info-menu-wizard',
     async (ctx) => {
-        const { keyboard, scene } = await getSceneAndKeyboard(ctx);
-        ctx.session.currentStage = scene;
-        ctx.session.currentSceneKeyboard = keyboard;
+        try{
+            const { keyboard, scene } = await getSceneAndKeyboard(ctx);
+            ctx.session.currentStage = scene;
+            ctx.session.currentSceneKeyboard = keyboard;
+            
+            await ctx.replyWithPhoto(
+                { source: path.join(__dirname, '../../public/about.jpg')},
+                {
+                    caption: moreInfo.main,
+                    reply_markup: infoKeyboard.reply_markup,
+                }
+            );
+        }   
+        catch (error) {
+            return;
+        }
         
-        await ctx.replyWithPhoto(
-            { source: path.join(__dirname, '../../public/about.jpg')},
-            {
-                caption: moreInfo.main,
-                reply_markup: infoKeyboard.reply_markup,
-            }
-        );
     }
 );
 

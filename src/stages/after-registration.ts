@@ -14,10 +14,16 @@ import { Bot } from "../app";
 const afterRegistrationMenuWizard = new Scenes.WizardScene<IBotContext>(
     'after-registration-menu-wizard',
     async (ctx) => {
-        UpdateStage(ctx, 'after-registration-menu-wizard');
-        if('after-registration-menu-wizard' == await GetCurrentStage()) {
-            await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboard);
+        try{
+            UpdateStage(ctx, 'after-registration-menu-wizard');
+            if('after-registration-menu-wizard' == await GetCurrentStage()) {
+                await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboard);
+            }
         }
+        catch (error) {
+            return;
+        }
+        
     },
 
 );
