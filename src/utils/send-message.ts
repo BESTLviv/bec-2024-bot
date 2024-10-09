@@ -17,7 +17,7 @@ export async function sendMessage(ctx: IBotContext, users: any[], inputMessage: 
                         }
                     }
                     catch (error) {
-                        return;
+                        continue;
                     }
 
                     
