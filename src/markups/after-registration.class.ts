@@ -1,9 +1,9 @@
 import { Markup } from "telegraf";
 
-export const menuOption = ['Вакансії', 'Більше інформації про BEC', 'Моя команда']
+export const menuOption = ['Знайти команду', 'Більше інформації про BEC', 'Моя команда']
 export const menuKeyboard = Markup.keyboard([
     [  
-        // Markup.button.callback(menuOption[0], "menu_vacancies"),
+        Markup.button.callback(menuOption[0], "menu_vacancies"),
         Markup.button.callback(menuOption[1], "menu_more-info"),
     ],
     [  

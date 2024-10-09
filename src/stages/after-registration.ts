@@ -1,5 +1,5 @@
 import { IBotContext } from "../context/context.interface";
-import { Scenes } from "telegraf";
+import { Markup, Scenes } from "telegraf";
 import { menuKeyboard } from "../markups/after-registration.class";
 import { menuOption } from "../markups/after-registration.class";
 import vacancies from '../data/vacancies.json';
@@ -31,19 +31,28 @@ const afterRegistrationMenuWizard = new Scenes.WizardScene<IBotContext>(
 const userLastMessageTime: { [userId: number]: number } = {};
 
 afterRegistrationMenuWizard.hears(menuOption[0], async (ctx) => {
-    const userId = ctx.from.id;
-    const now = Date.now();
+    // const userId = ctx.from.id;
+    // const now = Date.now();
 
-    if (!userLastMessageTime[userId] || (now - userLastMessageTime[userId] > 2000)) {
-        userLastMessageTime[userId] = now;
-    } else {
-        ctx.reply('Забагато спроб виконати команду');
-        return;
+    // if (!userLastMessageTime[userId] || (now - userLastMessageTime[userId] > 2000)) {
+    //     userLastMessageTime[userId] = now;
+    // } else {
+    //     ctx.reply('Забагато спроб виконати команду');
+    //     return;
+    // }
+
+    // await ctx.reply("Доступні вакансії:\n\n");
+    // for (const vacancy of vacancies.vacancies) {
+    //     await ctx.reply(`${vacancy.text}\n`);
+    // }
+    try{
+        await TimeCheck(ctx)
+        await ctx.reply('Приєднуйся до нашого чату',  Markup.inlineKeyboard([
+            Markup.button.url('Тик', 'https://t.me/BEC_2024_find_team')
+        ]));  
     }
-
-    await ctx.reply("Доступні вакансії:\n\n");
-    for (const vacancy of vacancies.vacancies) {
-        await ctx.reply(`${vacancy.text}\n`);
+    catch(error) {
+        return;
     }
 });
 afterRegistrationMenuWizard.hears(menuOption[1], async (ctx) => {
