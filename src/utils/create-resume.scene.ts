@@ -416,7 +416,7 @@ createResumeWizard.hears(resumeOption[2], async (ctx) => {
 
   if (user && user.cv) {
     const fileId = user.cv; // file_id з Telegram, а не URL
-    const filePath = `/${ctx.chat?.id}_cv.pdf`; // Шлях, куди буде збережено файл
+    const filePath = path.join(__dirname, `/${ctx.chat?.id}_cv.pdf`); // Шлях, куди буде збережено файл
 
     try {
       // Отримуємо фактичне посилання на файл за допомогою Telegram API

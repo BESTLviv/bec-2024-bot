@@ -13,7 +13,7 @@ import { getSceneAndKeyboard } from "../utils/generaly-utils.functions";
 
 function isTextMessage(message: any): message is { text: string } {
     return message && message.text !== undefined;
-}1
+}
 
 let selectedUsers: any[];
 let selectedTeam: any;
@@ -24,58 +24,71 @@ let currentSceneKeyboard: any;
 const adminPanelWizard = new Scenes.WizardScene<IBotContext>(
     'admin-panel-wizard',
     async (ctx) => {
-        console.log("admin-panel-wizard")
-        const { keyboard, scene } = await getSceneAndKeyboard(ctx);
-        currentStage = scene;
-        currentSceneKeyboard = keyboard;
-        await ctx.reply("Вітаємо в адмін панелі!", adminKeyboard);
+        try{
+            const { keyboard, scene } = await getSceneAndKeyboard(ctx);
+            currentStage = scene;
+            currentSceneKeyboard = keyboard;
+            await ctx.reply("Вітаємо в адмін панелі!", adminKeyboard);
+        }
+        catch (error) {
+            return;
+        }
     }, 
     //----------------------------------sendOption[0]-------------------------------------
     async (ctx) => {
-        if (ctx.chat && isTextMessage(ctx.message) && sendOption.includes(ctx.message.text.trim())) {
-            const option = ctx.message.text.trim();
-
-            switch (option) {
-                case sendOption[0]:
-                    selectedUsers = await UserModel.find({});
-                    break;
-                case sendOption[1]:
-                    selectedUsers = await UserModel.find({ isRegistered: true });
-                    break;
-                case sendOption[2]:
-                    selectedUsers = await UserModel.find({ isRegistered: false });
-                    break;
-                case sendOption[3]:
-                    selectedUsers = await UserModel.find({ team: { $exists: true, $ne: null } });
-                    break;
-                case sendOption[4]:
-                    selectedUsers = await UserModel.find({ isParticipant: true}); 
-                    break;
-                case sendOption[5]:
-                    selectedUsers = [await UserModel.findOne({ chatId: ctx.chat.id })];
-                    break;
-                default:
-                    await ctx.reply("Невідома опція.");
-                    await ctx.scene.enter("admin-panel-wizard"); 
-            }
-            await ctx.reply('Введіть повідомлення(текст, картинка-текст, документ, документ-текст), яке ви хочете надіслати:', Markup.removeKeyboard());
-            return ctx.wizard.next()
-        }
-        else {
-            await ctx.scene.enter("admin-panel-wizard");  
-        }
-       
-    }, 
-    async (ctx) => {
-        if (ctx.chat) {
-            if(ctx.message) {
-                await sendMessage(ctx, selectedUsers, ctx.message);
+        try{
+            if (ctx.chat && isTextMessage(ctx.message) && sendOption.includes(ctx.message.text.trim())) {
+                const option = ctx.message.text.trim();
+    
+                switch (option) {
+                    case sendOption[0]:
+                        selectedUsers = await UserModel.find({});
+                        break;
+                    case sendOption[1]:
+                        selectedUsers = await UserModel.find({ isRegistered: true });
+                        break;
+                    case sendOption[2]:
+                        selectedUsers = await UserModel.find({ isRegistered: false });
+                        break;
+                    case sendOption[3]:
+                        selectedUsers = await UserModel.find({ team: { $exists: true, $ne: null } });
+                        break;
+                    case sendOption[4]:
+                        selectedUsers = await UserModel.find({ isParticipant: true}); 
+                        break;
+                    case sendOption[5]:
+                        selectedUsers = [await UserModel.findOne({ chatId: ctx.chat.id })];
+                        break;
+                    default:
+                        await ctx.reply("Невідома опція.");
+                        await ctx.scene.enter("admin-panel-wizard"); 
+                }
+                await ctx.reply('Введіть повідомлення(текст, картинка-текст, документ, документ-текст), яке ви хочете надіслати:', Markup.removeKeyboard());
+                return ctx.wizard.next()
             }
             else {
-                await ctx.reply("Повідомлення не було знайдено. Будь ласка, спробуйте ще раз.");
+                await ctx.scene.enter("admin-panel-wizard");  
             }
-        }    
-        await ctx.scene.enter("admin-panel-wizard"); 
+        }
+        catch (error) {
+            return;
+        }  
+    }, 
+    async (ctx) => {
+        try{
+            if (ctx.chat) {
+                if(ctx.message) {
+                    await sendMessage(ctx, selectedUsers, ctx.message);
+                }
+                else {
+                    await ctx.reply("Повідомлення не було знайдено. Будь ласка, спробуйте ще раз.");
+                }
+            }    
+            await ctx.scene.enter("admin-panel-wizard"); 
+        }
+        catch (error) {
+            return;
+        }
     },
 );
 
