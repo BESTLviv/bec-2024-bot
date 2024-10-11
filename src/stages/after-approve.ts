@@ -19,7 +19,7 @@ const afterApproveMenuWizard = new Scenes.WizardScene<IBotContext>(
                 const team = await teamModel.findById(user?.team)
                 if( team && team.isApprove) {
                     if('after-approve-menu-wizard' == await GetCurrentStage()) {
-                        await ctx.reply("Вітаємо на Best Engineering Competition!", menuKeyboardAfterApprove);
+                        await ctx.reply("Вітаємо на BEST Engineering Competition!", menuKeyboardAfterApprove);
                     }
                 }
                 else {
