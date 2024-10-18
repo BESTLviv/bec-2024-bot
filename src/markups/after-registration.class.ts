@@ -63,7 +63,7 @@ export const teamProfileOption = ["Назад", "Додати ваше вико�
 export const teamProfileboard = Markup.keyboard([
     [  
         Markup.button.callback(teamProfileOption[0], "team-profile_back"),
-        Markup.button.callback(teamProfileOption[1], "team-profile_add-repo"),
+        // Markup.button.callback(teamProfileOption[1], "team-profile_add-repo"),
     ],
     [
         Markup.button.callback(teamProfileOption[2], "team-profile_change-technologyList"),

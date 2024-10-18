@@ -153,33 +153,33 @@ myTeamJoinedMenuWizard.hears(teamProfileOption[0], async (ctx) => {
         return ctx.scene.enter(ctx.session.currentStage, ctx.session.currentSceneKeyboard);  
 })
 
-    myTeamJoinedMenuWizard.hears(teamProfileOption[1], async (ctx) => {
-        try{
-            await TimeCheck(ctx)
-            if(ctx.session.currentStage !== "after-approve-menu-wizard") {
-                const stage = await currentStageModel.findOne({})
+    // myTeamJoinedMenuWizard.hears(teamProfileOption[1], async (ctx) => {
+    //     try{
+    //         await TimeCheck(ctx)
+    //         if(ctx.session.currentStage !== "after-approve-menu-wizard") {
+    //             const stage = await currentStageModel.findOne({})
     
-                if(stage?.isTestReady) {
-                    const user = await UserModel.findOne({ chatId: ctx.chat.id });
-                    const team = await teamModel.findById(user?.team);
-                    if(team?.category === "Team Design") {
-                        await ctx.reply("Введи посилання на ваш проєкт в Tinkercad'i");
-                    }
-                    else if (team?.category === "Case Study") {
-                        await ctx.reply("Завантажте у чат pdf-файл з вашим завданням");
-                    }
-                    ctx.wizard.selectStep(1);
-                }
-                else {
-                    await ctx.reply("Наразі тестового завдання ще нема, очікуйте інформацію в нашому телеграм боті або в інстаграмі.");  
-                }
+    //             if(stage?.isTestReady) {
+    //                 const user = await UserModel.findOne({ chatId: ctx.chat.id });
+    //                 const team = await teamModel.findById(user?.team);
+    //                 if(team?.category === "Team Design") {
+    //                     await ctx.reply("Введи посилання на ваш проєкт в Tinkercad'i");
+    //                 }
+    //                 else if (team?.category === "Case Study") {
+    //                     await ctx.reply("Завантажте у чат pdf-файл з вашим завданням");
+    //                 }
+    //                 ctx.wizard.selectStep(1);
+    //             }
+    //             else {
+    //                 await ctx.reply("Наразі тестового завдання ще нема, очікуйте інформацію в нашому телеграм боті або в інстаграмі.");  
+    //             }
             
-            }
-        } catch(error) {
-            return;
-        }
+    //         }
+    //     } catch(error) {
+    //         return;
+    //     }
         
-    })
+    // })
     myTeamJoinedMenuWizard.hears(teamProfileOption[2], async (ctx) => {
        
         try{
@@ -196,25 +196,67 @@ myTeamJoinedMenuWizard.hears(teamProfileOption[0], async (ctx) => {
     myTeamJoinedMenuWizard.hears(teamProfileOption[4], async (ctx) => {
         try{
             await TimeCheck(ctx)
-            if(ctx.session.currentStage !== "after-approve-menu-wizard") {
-                const stage = await currentStageModel.findOne({})
+            const stage = await currentStageModel.findOne({})
     
                 if(stage?.isTestReady) {
-                    if(ctx.chat && stage.linkForTest) {
-                        await ctx.replyWithPhoto(
-                            { source: path.join(__dirname, '../../public/test.jpg')},
-                            { caption: stage.linkForTest}
-                        );
-                    }    
+                    const user = await UserModel.findOne({ chatId: ctx.chat.id });
+                    const team = await teamModel.findById(user?.team);
+                    if(team?.category === "Team Design") {
+                        if(ctx.chat && stage.linkForTest) {
+                            await ctx.replyWithPhoto(
+                                { source: path.join(__dirname, '../../public/test.jpg')},
+                            );
+                            const filePath = path.resolve(__dirname, '../../public/TD тестове.pdf');
+                            try {
+                                await ctx.telegram.sendDocument(ctx.chat?.id, { source: filePath });
+                            } catch (error) {
+                                console.error('Помилка під час відправки файлу:', error);
+                                await ctx.reply('Сталася помилка під час відправки файлу.');
+                                ctx.wizard.selectStep(1);
+                            }
+                        } 
+                    }
+                    else if (team?.category === "Case Study") {
+                        if(ctx.chat && stage.linkForTest) {
+                            await ctx.replyWithPhoto(
+                                { source: path.join(__dirname, '../../public/test.jpg')}    
+                            );
+                            const filePath = path.resolve(__dirname, '../../public/CS тестове.pdf');
+                            try {
+                                await ctx.telegram.sendDocument(ctx.chat?.id, { source: filePath });
+                            } catch (error) {
+                                console.error('Помилка під час відправки файлу:', error);
+                                await ctx.reply('Сталася помилка під час відправки файлу.');
+                                ctx.wizard.selectStep(1);
+                            }
+                        } 
+                    }
+                    ctx.wizard.selectStep(1);
                 }
                 else {
-                    await ctx.replyWithPhoto(
-                        { source: path.join(__dirname, '../../public/notest.jpg')},
-                        {caption: "Тестового завдання ще нема, очікуйте в майбутньому"}
-                    );
+                    await ctx.reply("Наразі тестового завдання ще нема, очікуйте інформацію в нашому телеграм боті або в інстаграмі.");  
                 }
-                ctx.message.text = "";
-            }  
+
+
+            // if(ctx.session.currentStage !== "after-approve-menu-wizard") {
+            //     const stage = await currentStageModel.findOne({})
+    
+            //     if(stage?.isTestReady) {
+            //         if(ctx.chat && stage.linkForTest) {
+            //             await ctx.replyWithPhoto(
+            //                 { source: path.join(__dirname, '../../public/test.jpg')},
+            //                 { caption: stage.linkForTest}
+            //             );
+            //         }    
+            //     }
+            //     else {
+            //         await ctx.replyWithPhoto(
+            //             { source: path.join(__dirname, '../../public/notest.jpg')},
+            //             {caption: "Тестового завдання ще нема, очікуйте в майбутньому"}
+            //         );
+            //     }
+            //     ctx.message.text = "";
+            // }  
         }
         catch(error) {
             return;
