@@ -209,7 +209,9 @@ myTeamJoinedMenuWizard.hears(teamProfileOption[0], async (ctx) => {
                                 await ctx.replyWithPhoto(
                                     { source: path.join(__dirname, '../../public/test.jpg')}    
                                 );
-                                await ctx.telegram.sendDocument(ctx.chat?.id, { source: filePath });
+                                await ctx.telegram.sendDocument(ctx.chat?.id, { source: filePath },
+                                    {caption: "ДДЛ до 21.10 20:00"}
+                                );
                             } catch (error) {
                                 console.error('Помилка під час відправки файлу:', error);
                                 await ctx.reply('Сталася помилка під час відправки файлу.');
@@ -226,7 +228,9 @@ myTeamJoinedMenuWizard.hears(teamProfileOption[0], async (ctx) => {
                                 await ctx.replyWithPhoto(
                                     { source: path.join(__dirname, '../../public/test.jpg')}    
                                 );
-                                await ctx.telegram.sendDocument(ctx.chat?.id, { source: filePath });
+                                await ctx.telegram.sendDocument(ctx.chat?.id, { source: filePath }, 
+                                    {caption: "ДДЛ до 21.10 20:00"}
+                                );
                             } catch (error) {
                                 console.error('Помилка під час відправки файлу:', error);
                                 await ctx.reply('Сталася помилка під час відправки файлу.');
