@@ -47,7 +47,8 @@ myTeamMenuWizard.hears(takeOption[1], async (ctx) => {
     }
 })
 myTeamMenuWizard.hears(takeOption[2], async (ctx) => {
-    await ctx.scene.enter("create-team-wizard");  
+    await ctx.scene.enter("Час на створення команди вийшов, слідкуйте за нашими новинами!"); 
+    // await ctx.scene.enter("create-team-wizard");  
 })
 myTeamMenuWizard.hears(takeOption[3], async (ctx) => {
     await ctx.scene.enter("join-team-wizard");    

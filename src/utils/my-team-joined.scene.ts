@@ -203,11 +203,12 @@ myTeamJoinedMenuWizard.hears(teamProfileOption[0], async (ctx) => {
                     const team = await teamModel.findById(user?.team);
                     if(team?.category === "Team Design") {
                         if(ctx.chat && stage.linkForTest) {
-                            await ctx.replyWithPhoto(
-                                { source: path.join(__dirname, '../../public/test.jpg')},
-                            );
                             const filePath = path.resolve(__dirname, '../../public/TD тестове.pdf');
                             try {
+                                await ctx.reply("Завантажується файл...");
+                                await ctx.replyWithPhoto(
+                                    { source: path.join(__dirname, '../../public/test.jpg')}    
+                                );
                                 await ctx.telegram.sendDocument(ctx.chat?.id, { source: filePath });
                             } catch (error) {
                                 console.error('Помилка під час відправки файлу:', error);
@@ -218,11 +219,13 @@ myTeamJoinedMenuWizard.hears(teamProfileOption[0], async (ctx) => {
                     }
                     else if (team?.category === "Case Study") {
                         if(ctx.chat && stage.linkForTest) {
-                            await ctx.replyWithPhoto(
-                                { source: path.join(__dirname, '../../public/test.jpg')}    
-                            );
+                           
                             const filePath = path.resolve(__dirname, '../../public/CS тестове.pdf');
                             try {
+                                await ctx.reply("Завантажується файл...");
+                                await ctx.replyWithPhoto(
+                                    { source: path.join(__dirname, '../../public/test.jpg')}    
+                                );
                                 await ctx.telegram.sendDocument(ctx.chat?.id, { source: filePath });
                             } catch (error) {
                                 console.error('Помилка під час відправки файлу:', error);
