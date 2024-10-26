@@ -54,7 +54,14 @@ const adminPanelWizard = new Scenes.WizardScene<IBotContext>(
                         selectedUsers = await UserModel.find({ team: { $exists: true, $ne: null } });
                         break;
                     case sendOption[4]:
-                        selectedUsers = await UserModel.find({ isParticipant: true}); 
+                        const approvedTeams = await teamModel.find({ isApprove: true }).select('_id');
+
+                        const approvedTeamIds = approvedTeams.map(team => team._id);
+
+                        const users = await UserModel.find({ team: { $in: approvedTeamIds } });
+
+                        selectedUsers = users;
+
                         break;
                     case sendOption[5]:
                         selectedUsers = [await UserModel.findOne({ chatId: ctx.chat.id })];
