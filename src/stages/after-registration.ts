@@ -69,7 +69,7 @@ afterRegistrationMenuWizard.hears(adminSecret, async (ctx) => {
 
 afterRegistrationMenuWizard.hears(menuOption[3], async (ctx) => {
 
-
+    await TimeCheck(ctx);
     await ctx.reply("Доступні вакансії:\n\n");
     for (const vacancy of vacancies.vacancies) {
 
