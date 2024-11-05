@@ -1,14 +1,31 @@
 {
     "vacancies": [
         {
-            "text": "Штурмовик 3-ОШБ"
+            "title": "Бізнес аналітик",
+            "link": "https://join.kness.energy/%d0%b1%d1%96%d0%b7%d0%bd%d0%b5%d1%81-%d0%b0%d0%bd%d0%b0%d0%bb%d1%96%d1%82%d0%b8%d0%ba/"
         },
         {
-            "text": "МО туалету"
+            "title": "Електромонтер вторинних ланцюгів",
+            "link": "https://join.kness.energy/%d0%b5%d0%bb%d0%b5%d0%ba%d1%82%d1%80%d0%be%d0%bc%d0%be%d0%bd%d1%82%d0%b5%d1%80-%d0%b2%d1%82%d0%be%d1%80%d0%b8%d0%bd%d0%bd%d0%b8%d1%85-%d0%bb%d0%b0%d0%bd%d1%86%d1%8e%d0%b3%d1%96%d0%b2/"
         },
         {
-            "text": "Сеніор сапера "
+            "title": "Інженер електрозв’язку",
+            "link": "https://join.kness.energy/%d1%96%d0%bd%d0%b6%d0%b5%d0%bd%d0%b5%d1%80-%d0%b5%d0%bb%d0%b5%d0%ba%d1%82%d1%80%d0%be%d0%b7%d0%b2%d1%8f%d0%b7%d0%ba%d1%83/"
+        },
+        {
+            "title": "Фахівець із супроводу ветеранів війни та демобілізованих осіб",
+            "link": "https://join.kness.energy/%d1%84%d0%b0%d1%85%d1%96%d0%b2%d0%b5%d1%86%d1%8c-%d1%96%d0%b7-%d1%81%d1%83%d0%bf%d1%80%d0%be%d0%b2%d0%be%d0%b4%d1%83-%d0%b2%d0%b5%d1%82%d0%b5%d1%80%d0%b0%d0%bd%d1%96%d0%b2-%d0%b2%d1%96%d0%b9%d0%bd/"
+        },
+        {
+            "title": "Інженер групи прогнозування обсягів електричної енергії",
+            "link": "https://join.kness.energy/%d1%96%d0%bd%d0%b6%d0%b5%d0%bd%d0%b5%d1%80-%d0%b3%d1%80%d1%83%d0%bf%d0%b8-%d0%bf%d1%80%d0%be%d0%b3%d0%bd%d0%be%d0%b7%d1%83%d0%b2%d0%b0%d0%bd%d0%bd%d1%8f-%d0%be%d0%b1%d1%81%d1%8f%d0%b3%d1%96%d0%b2/"
+        },
+        {
+            "title": "Електромонтер з обслуговування ФЕС",
+            "link": "https://join.kness.energy/%d0%b5%d0%bb%d0%b5%d0%ba%d1%82%d1%80%d0%be%d0%bc%d0%be%d0%bd%d1%82%d0%b5%d1%80-%d0%b7-%d0%be%d0%b1%d1%81%d0%bb%d1%83%d0%b3%d0%be%d0%b2%d1%83%d0%b2%d0%b0%d0%bd%d0%bd%d1%8f-%d1%84%d0%b5%d1%81/"
         }
+        
+
     ]
 
     

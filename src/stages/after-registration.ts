@@ -67,6 +67,15 @@ afterRegistrationMenuWizard.hears(adminSecret, async (ctx) => {
     return ctx.scene.enter('admin-panel-wizard');
 });
 
+afterRegistrationMenuWizard.hears(menuOption[3], async (ctx) => {
 
+
+    await ctx.reply("Доступні вакансії:\n\n");
+    for (const vacancy of vacancies.vacancies) {
+
+        await ctx.reply(`${vacancy.title}\nДетальніше:${vacancy.link}`);
+    }
+   
+});
 
 export default afterRegistrationMenuWizard;
