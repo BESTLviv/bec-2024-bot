@@ -5,11 +5,12 @@ import { isTextMessage, isPhotoMessage, isDocumentMessage } from "./generaly-uti
 
 import pLimit from 'p-limit';
 
-// Максимальна кількість одночасних запитів
-const limit = pLimit(5);
+
 
 export async function sendMessage(ctx: IBotContext, users: any[], inputMessage: Message) {
     try {
+        const { default: pLimit } = await import('p-limit');
+        const limit = pLimit(5); 
         if (ctx.chat) {
             if (isTextMessage(inputMessage)) {
                 const message = inputMessage.text.trim();
