@@ -3,8 +3,6 @@ import { IBotContext } from "../context/context.interface";
 import { IUser } from "../database/Schema.class";
 import { isTextMessage, isPhotoMessage, isDocumentMessage } from "./generaly-utils.functions";
 
-import pLimit from 'p-limit';
-
 
 
 export async function sendMessage(ctx: IBotContext, users: any[], inputMessage: Message) {
