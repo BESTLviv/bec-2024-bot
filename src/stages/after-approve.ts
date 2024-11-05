@@ -50,9 +50,9 @@ afterApproveMenuWizard.hears(menuOptionAfterApprove[0], async (ctx) => {
     }
 
     await ctx.reply("Доступні вакансії:\n\n");
-    for (const vacancy of vacancies.vacancies) {
-        await ctx.reply(`${vacancy.text}\n`);
-    }
+    // for (const vacancy of vacancies.vacancies) {
+    //     await ctx.reply(`${vacancy.text}\n`);
+    // }
 });
 afterApproveMenuWizard.hears(menuOptionAfterApprove[1], async (ctx) => {
      return ctx.scene.enter('more-info-menu-wizard');   
